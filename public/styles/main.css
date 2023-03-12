@@ -1,0 +1,73 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@900&family=Nunito+Sans:ital,wght@0,400;0,600;0,700;1,400&display=swap');
+
+:root{
+    --bgColor: #f0f0e8;
+    --navbarColor: #98bf64;
+    --defaultFont: "Nunito Sans", sans-serif;
+    --aboutFont: "Montserrat", sans-serif;
+}
+
+body{
+    background-color: var(--bgColor);
+    margin: 0;
+    font-family: var(--defaultFont);
+}
+
+.navbar-custom {
+    background-color: var(--navbarColor);
+
+}
+.carousel {
+    width:640px;
+    height:640px;
+  }
+.carousel-control-next,
+.carousel-indicators,
+.carousel-control-prev /*, .carousel-indicators */ {
+    filter: invert(100%);
+}
+.about-section{
+    text-align: center;
+}
+.feedback.h1{
+    text-align: center;
+}
+
+form{
+    background-color: #98bf64;
+}
+
+  .container {
+    border-radius: 5px;
+    background-color: var(--navbarColor);
+  }
+
+
+.form-check-input:disabled{
+    opacity: 1;
+}
+
+.form-check-input:checked{
+    background-color: #98bf64;
+    border: #98bf64;
+}
+
+/* FAQ Accordion */
+.accordion-button{
+    background-color: #f2da9a;
+    font-weight:bold;
+}
+
+.accordion-button:focus {
+    border-color: #856817;
+    box-shadow: 0 0 0 .25rem rgba(133,104,23,.25)
+}
+
+.accordion-button:not(.collapsed){
+    color: #856817;
+    background-color: #edcf7b;
+}
+
+.accordion-body{
+    background-color: #f2da9a;
+}

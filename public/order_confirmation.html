@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Favicon -->
+    <link rel="apple-touch-icon" sizes="180x180" href="./assets/icons/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="./assets/icons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="./assets/icons/favicon-16x16.png">
+    <link rel="manifest" href="./assets/icons/site.webmanifest">
+    <link rel="mask-icon" href="./assets/icons/safari-pinned-tab.svg" color="#5bbad5">
+    <link rel="shortcut icon" href="./assets/icons/favicon.ico">
+    <meta name="msapplication-TileColor" content="#da532c">
+    <meta name="msapplication-config" content="./assets/icons/browserconfig.xml">
+    <meta name="theme-color" content="#ffffff">
+
+    <!-- Styles-->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="styles/main.css">
+
+    <title>Navya Organics</title>
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg navbar-light navbar-custom">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="index.html">Navya Organics</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <a class="nav-link" href="products.html">Products</a>
+          </li>      
+          <li class="nav-item">
+            <a class="nav-link" href="faq.html">FAQ</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="feedback.html">Feedback</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="about.html">About Us</a>
+          </li>
+
+        </ul>
+        <ul class="navbar-nav d-flex justify-content-end flex-grow-1" >
+            <li class="nav-item"id ="cart">
+                <a class="nav-link" href="shop.html"><i class="fa-solid fa-cart-shopping"id="cartIcon"></i></a>
+            </li>
+            <li class="nav-item"id="login">
+                <a class="nav-link" href="login.html"><i class="fa-solid fa-user"id="loginIcon" > Login</i></a>
+            </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+  <div class="card">
+    <div class="col-50">
+    <div class="card-body">
+      <h1>Customer Details</h1>
+      <div class="row mt-2">
+        <div class="col-md-6"><label class="labels">Name</label><input type="text" class="form-control" placeholder="Fullname" value="" disabled></div>
+        <div class="col-md-6"><label class="labels">Email</label><input type="text" class="form-control" value="" placeholder="Email"disabled></div>
+        <div class="col-md-6"><label class="labels">Shipping Address Line 1</label><input type="text" class="form-control" value="" placeholder="address 1"disabled></div>
+        <div class="col-md-6"><label class="labels">Shipping Address Line 2</label><input type="text" class="form-control" value="" placeholder="address 2"disabled></div>
+        <div class="col-md-6"><label class="labels">Phone Number</label><input type="text" class="form-control" value="" placeholder="phone number"disabled></div>
+    </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-body">
+      <h1>Shipping Method</h1>
+      <div class="form-check">
+        <input class="form-check-input" type="radio" name="shipping" id="shipping " checked>
+        <label class="form-check-label" for="shipping">
+          Flash Express
+        </label>
+      </div>  
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-body">
+      <h1>Payment Method</h1>
+      <div class="form-check">
+        <input class="form-check-input" type="radio" name="payment" id="cod" checked>
+        <label class="form-check-label" for="payment">
+          Cash on Delivery
+        </label>
+      </div>
+      <div class="form-check">
+        <input class="form-check-input" type="radio" name="payment" id="gcash" >
+        <label class="form-check-label" for="payment">
+          Gcash
+        </label>
+      </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-body">
+      <h1>Order Summary</h1>
+      
+          <div class="row d-flex justify-content-between align-items-center">
+            <div class="col-md-2 col-lg-2 col-xl-2">
+              <img
+                src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-shopping-carts/img1.webp"
+                class="img-fluid rounded-3" alt="Cotton T-shirt">
+            </div>
+            <div class="col-md-3 col-lg-3 col-xl-3">
+              <p class="lead fw-normal mb-2">Basic T-shirt</p>
+              <p><span class="text-muted">Size: </span>M <span class="text-muted">Color: </span>Grey</p>
+            </div>
+            <div class="col-md-3 col-lg-3 col-xl-2 d-flex">
+
+              <input id="form1" min="0" name="quantity" value="2" type="number" disabled
+                class="form-control form-control-sm" />
+
+            </div>
+            <div class="col-md-3 col-lg-2 col-xl-2 offset-lg-1">
+              <h5 class="mb-0">$499.00</h5>
+            </div>
+          </div>
+          <p>Subtotal: $ 5000</p>
+        </div>
+    </div>
+  </div>
+
+
+  
+  <div class="card">
+    <div class="card-body">
+      <button type="button" class="btn btn-warning btn-block btn-lg">Confirm checkout</button>
+    </div>
+  </div>
+</div>
+
+
+</body>
+</html>
+<script>
+    function mouseOut(id) {
+        document.getElementById(id).classList.remove('fa-bounce');
+}
+function mouseOver(id) {
+        document.getElementById(id).classList.add('fa-bounce');
+}
+    document.getElementById("login").addEventListener("mouseover", (e) => {
+        mouseOver("loginIcon")
+    });
+    
+    document.getElementById("login").addEventListener("mouseout", (e) => {
+        mouseOut("loginIcon")
+    });
+    
+    document.getElementById("cart").addEventListener("mouseover", (e) => {
+        mouseOver("cartIcon")
+    });
+    
+    document.getElementById("cart").addEventListener("mouseout", (e) => {
+        mouseOut("cartIcon")
+    });
+
+</script>

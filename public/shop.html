@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Favicon -->
+    <link rel="apple-touch-icon" sizes="180x180" href="./assets/icons/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="./assets/icons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="./assets/icons/favicon-16x16.png">
+    <link rel="manifest" href="./assets/icons/site.webmanifest">
+    <link rel="mask-icon" href="./assets/icons/safari-pinned-tab.svg" color="#5bbad5">
+    <link rel="shortcut icon" href="./assets/icons/favicon.ico">
+    <meta name="msapplication-TileColor" content="#da532c">
+    <meta name="msapplication-config" content="./assets/icons/browserconfig.xml">
+    <meta name="theme-color" content="#ffffff">
+    <!-- Styles-->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="styles/main.css">
+    <title>Navya Organics</title>
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg navbar-light navbar-custom">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="index.html">Navya Organics</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <a class="nav-link" href="products.html">Products</a>
+          </li>      
+          <li class="nav-item">
+            <a class="nav-link" href="faq.html">FAQ</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="feedback.html">Feedback</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="about.html">About Us</a>
+          </li>
+        </ul>
+        <ul class="navbar-nav d-flex justify-content-end flex-grow-1" >
+            <li class="nav-item"id ="cart">
+                <a class="nav-link" href="shop.html"><i class="fa-solid fa-cart-shopping"id="cartIcon"></i></a>
+            </li>
+            <li class="nav-item"id="login">
+                <a class="nav-link" href="login.html"><i class="fa-solid fa-user"id="loginIcon" > Login</i></a>
+                <a class="nav-link" href="login.html"><i class="fa-solid fa-user"id="loginIcon" > </i></a>
+            </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+  <section class="h-100" style="background-color: #eee;">
+    <div class="h-100 py-5">
+      <div class="row d-flex justify-content-center align-items-center h-100">
+        <div class="col-10">
+  
+          <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="fw-normal mb-0 text-black" style="font-weight:600;">Shopping Cart</h1>
+          </div>
+
+          <div id="cartContainer">
+
+
+          </div>
+
+          <!-- <div class="card mb-4">
+            <div class="card-body p-4 d-flex flex-row">
+              <div class="form-outline flex-fill">
+                <input type="text" id="form1" class="form-control form-control-lg" />
+                <label class="form-label" for="form1">Discount code</label>
+              </div>
+              <button type="button" class="btn btn-outline-warning btn-lg ms-3">Apply</button>
+            </div>
+          </div> -->
+
+
+          <!-- Checklist -->
+          <div class="card mb-4">
+            <div class="card-body p-4 d-flex flex-row">
+              <div class="form-outline flex-fill">
+                <div class="row justify-content-left">
+                  <div class="form-check">
+                    <h3>Checklist</h3>
+                    <input class="form-check-input" type="checkbox" value="" id="accountVerifiedChecklist" disabled>
+                    <label class="form-check-label" for="flexCheckDisabled">
+                      Verified Email Address
+                    </label>
+                    <p id="verifyEmailPrompt"></p>
+                  </div>
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" id="userProfileChecklist" disabled>
+                    <label class="form-check-label" for="flexCheckCheckedDisabled">
+                      Completed User Profile
+                    </label>
+                    <p id="userProfilePrompt"></p>
+                  </div>
+                  </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-body">
+              <button id="checkout" type="button" class="btn btn-warning btn-block btn-lg" disabled>Proceed to Checkout</button>
+            </div>
+          </div>
+  
+        </div>
+      </div>
+    </div>
+  </section>
+  
+</body>
+</html>
+<script>
+    function mouseOut(id) {
+        document.getElementById(id).classList.remove('fa-bounce');
+}
+function mouseOver(id) {
+        document.getElementById(id).classList.add('fa-bounce');
+}
+    document.getElementById("login").addEventListener("mouseover", (e) => {
+        mouseOver("loginIcon")
+    });
+    
+    document.getElementById("login").addEventListener("mouseout", (e) => {
+        mouseOut("loginIcon")
+    });
+    
+    document.getElementById("cart").addEventListener("mouseover", (e) => {
+        mouseOver("cartIcon")
+    });
+    
+    document.getElementById("cart").addEventListener("mouseout", (e) => {
+        mouseOut("cartIcon")
+    });
+
+</script>
+</script>
+<script type="module" src="./src/essential.js" defer></script>
+<script type="module" src="./src/shop.js" defer></script> 

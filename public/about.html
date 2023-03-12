@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Favicon -->
+    <link rel="apple-touch-icon" sizes="180x180" href="./assets/icons/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="./assets/icons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="./assets/icons/favicon-16x16.png">
+    <link rel="manifest" href="./assets/icons/site.webmanifest">
+    <link rel="mask-icon" href="./assets/icons/safari-pinned-tab.svg" color="#5bbad5">
+    <link rel="shortcut icon" href="./assets/icons/favicon.ico">
+    <meta name="msapplication-TileColor" content="#da532c">
+    <meta name="msapplication-config" content="./assets/icons/browserconfig.xml">
+    <meta name="theme-color" content="#ffffff">
+
+    <!-- Styles-->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="styles/main.css">
+
+    <title>Navya Organics</title>
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg navbar-light navbar-custom">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="index.html">Navya Organics</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <a class="nav-link" href="products.html">Products</a>
+          </li>      
+          <li class="nav-item">
+            <a class="nav-link" href="faq.html">FAQ</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="feedback.html">Feedback</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="about.html">About Us</a>
+          </li>
+
+        </ul>
+        <ul class="navbar-nav d-flex justify-content-end flex-grow-1" >
+            <li class="nav-item"id ="cart">
+                <a class="nav-link" href="shop.html"><i class="fa-solid fa-cart-shopping"id="cartIcon"></i></a>
+            </li>
+            <li class="nav-item"id="login">
+                <a class="nav-link" href="login.html"><i class="fa-solid fa-user"id="loginIcon" > </i></a>
+            </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+  <!-- <div class="about-section">
+    <h1>About Us Page</h1>
+    <p>
+      Our Story
+      While NAVYA Organics itself was founded in 2020, all of our recipes and formulas date back decades and sometimes even centuries. Our brand is 100% dedicated to creating fully natural, and sustainable products. All of our products are Hand-Made in a small manufacture in Poland in cold process which guarantees that they are safe for your skin and free of any harsh chemicals. In fact the final product you receive is completely free of ANY CHEMICALS!
+  
+      We want you to love your skin, and we want your daily bathing and skincare rituals to be as luxurious and guilt-free as possible.
+  
+      Our Goal is to not only be different than regular soap producers we aim to be better and we want to achieve this by listening and caring about YOU and your family.
+  
+  
+      Premium natural soap hand-made for you
+      We are redefining the soap industry with each new soap bar we release. Every bar is designed and crafted by our family with attention to quality and functionality, to make a product that fits all of your needs and will make shopping for soap exciting!
+  
+      Manly Scents? We got it!
+  
+      Organic Bar that will make your skin as smooth as ever? You’re in the right place!
+  
+      Exfoliating with Vitamins? We got that too!
+  
+      Delicate and Nourishing? Yes, you guessed it!
+  </p>
+  </div> -->
+  
+  <style>
+    .container{
+      background: transparent;
+      height: 100%;
+      width: 100%;
+    }
+
+section{
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+/* section:nth-child(1){
+  color: #e0ffff;
+} */
+/* section:nth-child(2){
+  color: black;
+  background: #d3bea0;
+}  */
+/* section:nth-child(3){
+  color: #e0ffff;
+}
+section:nth-child(4){
+  color: black;
+  background: #d3bea0;
+} */
+section .container{
+  margin: 20px 0;
+}
+section h1{
+  font-size: 3rem;
+  margin: 20px;
+}
+section h2{
+  font-size: 40px;
+  text-align: center;
+  text-transform: uppercase;
+}
+section .text-container{
+   display: flex;
+}
+section .text-container .text-box{
+  margin: 20px;
+  padding: 20px;
+  background: #00c2cb;
+}
+section .text-container .text-box h3{
+  font-size: 30px;
+  text-align: center;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+
+@media (max-width: 900px){
+  section h1{
+    font-size: 2rem;
+    text-align: center;
+  }
+  section .text-container{
+    flex-direction: column;
+  }
+}
+
+.reveal{
+  position: relative;
+  transform: translateY(150px);
+  opacity: 0;
+  transition: 1s all ease;
+}
+
+.reveal.active{
+  transform: translateY(0);
+  opacity: 1;
+}
+  </style>
+
+<section style="background-image: url('./assets/forest-arial-view.jpg');background-size: cover;background-repeat: no-repeat; color: #e0ffff;overflow-x: hidden;pointer-events:none;">
+  <h1 style="font-size:15rem;font-family:'Montserrat',sans-serif;color:white;opacity: 75%;pointer-events:none;">NAVYA ORGANICS</h1>
+</section>
+<section style="color: black; background: #d3bea0;">
+  <div class="container reveal">
+    <div class="d-flex align-items-center justify-content-center">
+      <div class="flex-grow-1" style="margin-right:4rem;">
+        <h1 style="text-align: center;font-weight:600;font-size:8rem;">Our Story</h1>
+        <p style="text-align: justify;font-size: larger;">While NAVYA Organics itself was founded in 2020, all of our recipes and formulas date back decades and sometimes even centuries. Our brand is 100% dedicated to creating fully natural, and sustainable products. All of our products are Hand-Made in a small manufacture in Poland in cold process which guarantees that they are safe for your skin and free of any harsh chemicals. In fact the final product you receive is completely free of ANY CHEMICALS!<br><br>
+
+          We want you to love your skin, and we want your daily bathing and skincare rituals to be as luxurious and guilt-free as possible.<br><br>
+          
+          Our Goal is to not only be different than regular soap producers we aim to be better and we want to achieve this by listening and caring about YOU and your family.</p>
+      </div>
+      <img class="mt-5 flex align-self-center shadow-lg p-3 mb-5 bg-white rounded" width="400rem" src="./assets/navya_logo_large.webp">
+    </div>
+  </div>
+</section>
+
+<section >
+  <div class="container reveal">
+    <div class="d-flex align-items-center justify-content-center">
+      <img class="mt-5 flex align-self-center shadow-lg p-3 mb-5 bg-white rounded" width="400rem" src="./assets/products/organic soap.jpeg">
+      <div class="flex-grow-1" style="margin-left:4rem;">
+        <h1 style="text-align: center;font-weight:600;font-size:3rem;">Premium natural soap hand-made for you</h2>
+        <p style="text-align: justify;font-size: large;">We are redefining the soap industry with each new soap bar we release. Every bar is designed and crafted by our family with attention to quality and functionality, to make a product that fits all of your needs and will make shopping for soap exciting!<br><br>
+
+          Manly Scents? <b>We got it!</b> <br><br>
+          
+          Organic Bar that will make your skin as smooth as ever? <b>You're in the right place!</b><br><br>
+          
+          Exfoliating with Vitamins? <b>We got that too!</b><br><br>
+          
+          Delicate and Nourishing? <b>Yes, you guessed it!</b></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="color: black; background: #d3bea0;">
+  <div class="container reveal">
+    <div>
+        <h1 style="text-align: center;font-weight:800;font-size:6rem;">Uniquely Effective and 100% Natural </h2>
+        <h4 style="text-align: justify;">We've personally searched the world for the highest quality ethically sourced organic raw materials. Digging for steam-distilled therapeutic-grade essential oils. Handpicking fields for plant-based food-grade cold-pressed oils. Visiting the plants that will be recycling and reusing our compostable packaging.</h4>
+    </div>
+  </div>
+</section>
+
+
+</body>
+</html>
+<script>
+    function mouseOut(id) {
+        document.getElementById(id).classList.remove('fa-bounce');
+}
+function mouseOver(id) {
+        document.getElementById(id).classList.add('fa-bounce');
+}
+    document.getElementById("login").addEventListener("mouseover", (e) => {
+        mouseOver("loginIcon")
+    });
+    
+    document.getElementById("login").addEventListener("mouseout", (e) => {
+        mouseOut("loginIcon")
+    });
+    
+    document.getElementById("cart").addEventListener("mouseover", (e) => {
+        mouseOver("cartIcon")
+    });
+    
+    document.getElementById("cart").addEventListener("mouseout", (e) => {
+        mouseOut("cartIcon")
+    });
+
+</script>
+<script type="module" src="./src/essential.js" defer></script>
+<script type="module" src="./src/about.js" defer></script>

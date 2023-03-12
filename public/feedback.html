@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Favicon -->
+    <link rel="apple-touch-icon" sizes="180x180" href="./assets/icons/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="./assets/icons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="./assets/icons/favicon-16x16.png">
+    <link rel="manifest" href="./assets/icons/site.webmanifest">
+    <link rel="mask-icon" href="./assets/icons/safari-pinned-tab.svg" color="#5bbad5">
+    <link rel="shortcut icon" href="./assets/icons/favicon.ico">
+    <meta name="msapplication-TileColor" content="#da532c">
+    <meta name="msapplication-config" content="./assets/icons/browserconfig.xml">
+    <meta name="theme-color" content="#ffffff">
+
+    <!-- Styles-->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+    <link rel="stylesheet" href="styles/main.css">
+
+    <!-- jquery -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.3/jquery.min.js" integrity="sha512-STof4xm1wgkfm7heWqFJVn58Hm3EtS31XFaagaa8VMReCXAkQnJZ+jEy8PCC/iT18dFy95WcExNHFTqLyp72eQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    
+    <title>Navya Organics</title>
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg navbar-light navbar-custom">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="index.html">Navya Organics</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <a class="nav-link" href="products.html">Products</a>
+          </li>      
+          <li class="nav-item">
+            <a class="nav-link" href="faq.html">FAQ</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="feedback.html">Feedback</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="about.html">About Us</a>
+          </li>
+
+          </ul>
+          <ul class="navbar-nav d-flex justify-content-end flex-grow-1" >
+              <li class="nav-item"id ="cart">
+                  <a class="nav-link" href="shop.html"><i class="fa-solid fa-cart-shopping"id="cartIcon"></i></a>
+              </li>
+              <li class="nav-item"id="login">
+                  <a class="nav-link" href="login.html"><i class="fa-solid fa-user"id="loginIcon" > </i></a>
+              </li>
+          </ul>
+        </div>
+
+      </div>
+    </div>
+  </nav>
+
+  <div id="alertsContainer" style="position: fixed;width: 100%; top:0; z-index: 2000;">
+    
+  </div>
+
+  <div id="toastsContainer" style="position: fixed; top: 20; right: 0; z-index: 2000;">
+
+  </div>
+
+    <h1 style="margin:2rem auto 1rem; text-align: center; font-weight:600;">Customer Feedback</h1>
+    <div id="reviewsContainer" class="rounded d-flex flex-column align-items-center" style="background-color:#e3d3bc;margin:auto;width:96%;height:25rem;padding:2rem;overflow: auto;">
+      <!-- <div class="rounded shadow-lg" style="background-color:#fefcf9;height:6rem;width:98%;margin-bottom:1rem;display:flex;column-gap:1rem;padding:0.5rem;">
+        <div style="display:flex; justify-content: center;align-items: center;">
+          <img class="rounded img-fluid" src="./assets/navya_logo_large.webp" style="width:2rem;height:2rem;border:solid 1px black;object-fit:cover;">
+          <p style="margin:0;font-size:smaller;text-align:left;overflow-wrap: break-word;width:10rem;margin-left:0.5rem;">Karl Vinzon Alcantara</p>
+        </div>
+        <div style="display:flex; justify-content: center;align-items: center;">
+          <img class="rounded img-fluid" src="./assets/products/image1.png" style="width:4rem;height:4rem;border:solid 1px black;object-fit:cover;margin-right:1rem;">
+          <p style="margin:0;overflow-wrap: break-word;width:16rem;font-size:small;">4-Pack Variety: Coffee & Cocoa, Activated Charcoal, Macadamia Oil, Blue Almonds</p>
+        </div>
+        <div style="display:flex; justify-content: center;align-items: center;">
+          <i class="fa-solid fa-star"></i>
+          <i class="fa-solid fa-star"></i>
+          <i class="fa-solid fa-star"></i>
+          <i class="fa-solid fa-star"></i>
+          <i class="fa-solid fa-star"></i>
+        </div>
+        <div style="display:flex; justify-content: center;align-items: center;flex-grow: 1;">
+          <p style="text-align:left;width:100%;margin:0;">"Coffee & Cocoa" soap is a heavenly-scented, moisturizing soap made with natural ingredients. Perfect for coffee and chocolate lovers. Highly recommend!</p>
+        </div>
+      </div> -->
+
+    </div>
+    <div class="d-flex align-items-center justify-content-around" style="width:100%;margin:2rem 0 3rem;">
+      <button id="showReviewModal" type="button" class="btn btn-primary btn-lg btn-block shadow-lg" style="background-color:#d8a460;border:none;">Share your Feedback</button>
+    </div>
+    
+    <!-- New Review Modal -->
+  <div class="modal fade" id="newReviewModal">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content">
+  
+        <!-- Modal Header -->
+        <div class="modal-header">
+          <h4 class="modal-title">Create a Review</h4>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+  
+        <!-- Modal body -->
+        <div class="modal-body">
+            <label for="productInput">Product</label>
+            <select id="productSelectOption" class="form-select" aria-label="Default select example">
+              <option value="default" selected>Please Select a Previously Purchased Product</option>
+              <option value="1">3-Pack of Macadamia Nut Oil Natural Soap Bar with Bergamot Orange</option>
+              <option value="2">Activated Charcoal Natural Soap Bar, Deep Cleansing</option>
+              <option value="3">Blue Almonds Natural Soap Bar with French Clay and Sea Salt</option>
+            </select>
+            <div style="margin:1rem 0 1rem;">
+              <label for="productInput">Rating</label>
+              <style>
+                .ratingStar:hover{
+                  cursor: pointer;
+                }
+              </style>
+              <div id="starsDiv" >
+                <i data-rating="1" class="fa-regular fa-star ratingStar"></i>
+                <i data-rating="2" class="fa-regular fa-star ratingStar"></i>
+                <i data-rating="3" class="fa-regular fa-star ratingStar"></i>
+                <i data-rating="4" class="fa-regular fa-star ratingStar"></i>
+                <i data-rating="5" class="fa-regular fa-star ratingStar"></i>
+              </div>
+            </div>
+
+            <label id="reviewTextAreaLabel" for="productInput">Comments (0/150)</label>
+            <textarea id="reviewTextArea" class="form-control" aria-label="With textarea" maxlength="150"></textarea>
+        </div>
+        
+        <!-- Modal footer -->
+        <div class="modal-footer">
+          <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancel</button>
+          <button type="button" class="btn btn-primary" id="createNewProductButton">Save</button>
+        </div>
+  
+      </div>
+    </div>
+  </div>
+    
+
+</body>
+</html>
+<script>
+    function mouseOut(id) {
+        document.getElementById(id).classList.remove('fa-bounce');
+}
+function mouseOver(id) {
+        document.getElementById(id).classList.add('fa-bounce');
+}
+    document.getElementById("login").addEventListener("mouseover", (e) => {
+        mouseOver("loginIcon")
+    });
+    
+    document.getElementById("login").addEventListener("mouseout", (e) => {
+        mouseOut("loginIcon")
+    });
+    
+    document.getElementById("cart").addEventListener("mouseover", (e) => {
+        mouseOver("cartIcon")
+    });
+    
+    document.getElementById("cart").addEventListener("mouseout", (e) => {
+        mouseOut("cartIcon")
+    });
+
+</script>
+<script type="module" src="./src/essential.js" defer></script>
+<script type="module" src="./src/feedback.js" defer></script>
