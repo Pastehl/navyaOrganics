@@ -1,6 +1,7 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-app.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-auth.js";
-import { getFirestore, doc, setDoc, collection, getDoc, getDocs, updateDoc, query, where } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-firestore.js";
+import { getFirestore, doc, setDoc, collection, getDoc, getDocs, updateDoc, query, where, Timestamp, orderBy } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-firestore.js";
+
 
 const firebaseConfig = {
 
@@ -28,7 +29,10 @@ const db = getFirestore(app);
 
 showReviews();
 async function showReviews(){
-    const querySnapshot = await getDocs(collection(db, "reviews"));
+    //const querySnapshot = await getDocs(collection(db, "reviews"));
+    const docsRef = collection(db, "reviews");
+    let q = query(docsRef, orderBy("date", "desc"));
+    const querySnapshot = await getDocs(q);
     let reviewsHTML = "";
     querySnapshot.forEach((doc) => {
         // doc.data() is never undefined for query doc snapshots
@@ -262,13 +266,19 @@ async function createReview(userID){
     let username = userSnap.data().firstname + " " + userSnap.data().lastname
     let userImage = userSnap.data().image;
 
+    if (userImage == null || userImage == undefined){
+        let placeholder = "https://firebasestorage.googleapis.com/v0/b/navya-organics.appspot.com/o/products%2F146-1468281_profile-icon-png-transparent-profile-picture-icon-png.jpg?alt=media&token=7d333dd9-3cd5-48d6-bab5-838c22db1967"
+        userImage = placeholder
+    }
+
     await setDoc(doc(db, "reviews", makeid(15)), {
         product: product,
         productImage: productImage,
         rating: starRating,
         review: reviewTextArea,
         user: username,
-        userImage: userImage
+        userImage: userImage,
+        date: Timestamp.fromDate(new Date())
     }).then(function(){
         showSuccessToast("Success", "Your review is now posted");
         $('#newReviewModal').modal('hide');

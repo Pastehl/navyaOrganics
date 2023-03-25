@@ -123,8 +123,40 @@ async function showOrders(){
                     itemsList += item+"<br>";
                 }
 
-                let status = (docItem.data().status).toUpperCase();
-                if(docItem.data().status=="awaitingPayment"){
+                let status = (docItem.data().status);
+                switch (status) {
+                    case 'pending':
+                        status = 'Pending'
+                        break;
+                    case 'awaitingPayment':
+                        status = 'Awaiting Payment'
+                        break;
+                    case 'paid':
+                        status = 'Paid'
+                        break;
+                    case 'beingMade':
+                        status = 'Being Made'
+                        break;
+                    case 'beingDelivered':
+                        status = 'Out for Delivery'
+                        break;
+                    case 'delivered':
+                        status = 'Delivered'
+                        break;
+                    case 'Cancelled - Product Unavailable':
+                        status = 'Cancelled - Product Unavailable'
+                        break;
+                    case 'Cancelled - User Info Incomplete':
+                        status = 'Cancelled - User Info Incomplete'
+                        break;
+                    case 'Cancelled - Address out of Coverage Area':
+                        status = 'Cancelled - Address out of Coverage Area'
+                        break;
+                    
+                    default:
+                        break;
+                }
+                if(status=="Awaiting Payment"){
                     status = `<a class="gcashClickable" style="cursor:pointer;">`+status+`</a>`
                 }
 
