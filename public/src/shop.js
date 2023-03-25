@@ -138,7 +138,7 @@ async function showCartItems(userID){
                   </div>
                   <div class="col-md-3 col-lg-3 col-xl-2 d-flex">
                     <button data-operation="sub" data-product-id="`+productID+`" class="btn btn-link px-2 itemQuantityButton"
-                      onclick="this.parentNode.querySelector('input[type=number]').stepDown()">
+                      onclick="this.parentNode.querySelector('input[type=number] [min = 1] [step = 1]').stepDown()">
                       <i class="fas fa-minus"></i>
                     </button>
     
