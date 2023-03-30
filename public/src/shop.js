@@ -58,6 +58,7 @@ onAuthStateChanged(auth, async (user) => {
     }
 });
 
+
 async function updateCheckoutButton(){
     onAuthStateChanged(auth, async (user) => {
         if (user) {
@@ -138,7 +139,7 @@ async function showCartItems(userID){
                   </div>
                   <div class="col-md-3 col-lg-3 col-xl-2 d-flex">
                     <button data-operation="sub" data-product-id="`+productID+`" class="btn btn-link px-2 itemQuantityButton"
-                      onclick="this.parentNode.querySelector('input[type=number]').stepDown()">
+                      onclick="this.parentNode.querySelector('input[type=number] nn').stepDown()">
                       <i class="fas fa-minus"></i>
                     </button>
     
@@ -169,6 +170,13 @@ async function showCartItems(userID){
 async function addQtyButtonFunctionality(userID){
     // console.log(document.getElementsByClassName("itemQuantity"));
     for (const elem of document.getElementsByClassName("itemQuantity")) {
+        elem.addEventListener('keypress', function(e){
+            const key = e.key;
+             if(key == "."){
+                 e.preventDefault();
+             }
+        });
+        
         elem.onchange = async function(e){
             let itemID = elem.getAttribute('data-product-id');
             let newQty = elem.value;

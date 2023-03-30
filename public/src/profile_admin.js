@@ -94,11 +94,17 @@ for (const elem of sidebarButtons) {
 
 // ************************
 
-var querySnapshotOrders = await showOrders();
-async function showOrders(){
+var querySnapshotOrders = await showOrders("desc");
+async function showOrders(order){
     // const querySnapshot = await getDocs(collection(db, "orders"));
     const docsRef = collection(db, "orders");
-    let q = query(docsRef, orderBy("date", "desc"));
+    let q;
+    if(order=="asc"){
+        q = query(docsRef, orderBy("date", "asc"));
+    }else{
+        q = query(docsRef, orderBy("date", "desc"));
+    }
+     
     const querySnapshot = await getDocs(q);
     let ordersListContainer = document.getElementById("ordersListContainer");
     ordersListContainer.innerHTML = "";
@@ -170,18 +176,18 @@ async function showOrders(){
 
 // Orders Search
 document.getElementById("ordersSearchButton").addEventListener('click', async function() {
-    ordersSearchFunctionality();
+    ordersSearchFunctionality(querySnapshotOrders);
 });
 
 document.addEventListener("keyup", function(event) {
     if (event.code === 'Enter') {
         if(document.getElementById("ordersSearch") === document.activeElement){
-            ordersSearchFunctionality();
+            ordersSearchFunctionality(querySnapshotOrders);
         }
     }
 });
 
-function ordersSearchFunctionality(){
+function ordersSearchFunctionality(querySnapshotOrders){
     var searchInput = document.getElementById("ordersSearch").value;
     var searchOption = document.getElementById("ordersSearchOption").value;
     switch (searchOption) {
@@ -232,14 +238,39 @@ function ordersSearchFunctionality(){
             });
             addManageButtonFunctionality();
             break;
+        case "products":
+            document.getElementById("ordersListContainer").innerHTML = "";
+            querySnapshotOrders.forEach((doc) => {
+                if(hasProduct(doc.data().cartItems, searchInput)){
+                    showSearchedOrders(doc.id,doc.data().firstname,doc.data().lastname,doc.data().date,doc.data().cartItems,doc.data().status,doc.data().total);
+                }
+            });
+            addManageButtonFunctionality();
+            break;
     
         default:
             break;
     }
 
     if(searchInput==""){
-        showOrders();
+        let order = document.getElementById("ordersSearchOrdering").value;
+        if(order=="asc"){
+            showOrders("asc");
+        }else{
+            showOrders("desc");
+        }
+        
     }
+
+    function hasProduct(cartItems, product){
+        for (let index = 0; index < cartItems.length; index++) {
+            const element = cartItems[index];
+            if(element.productID==product){
+                return true;
+            }
+        }
+        return false;
+    };
 
     function showSearchedOrders(id,firstname,lastname,date,cartItems,stat,total){
 
@@ -292,6 +323,16 @@ function ordersSearchFunctionality(){
         `
     }
 }
+
+document.getElementById("ordersSearchOrdering").addEventListener("change", function(){
+    console.log(this.value);
+    if(this.value == "desc"){
+        ordersSearchFunctionality(querySnapshotOrders);
+    }
+    else{
+        ordersSearchFunctionality(querySnapshotOrders.docs.reverse());
+    }
+});
 
 function addManageButtonFunctionality(){
     let editButtons = document.getElementsByClassName("showManageModalButton");
@@ -362,7 +403,7 @@ function addManageButtonFunctionality(){
                 await updateDoc(docRef, {
                     status: inputText
                 }).then(async function(){
-                    querySnapshotOrders = await showOrders();
+                    querySnapshotOrders = await showOrders("desc");
                 })
             }
             
@@ -373,6 +414,248 @@ function addManageButtonFunctionality(){
 
 function capitalizeFirstLetter(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
+// ************************
+
+// Manage Reviews
+
+// ************************
+
+var querySnapshotReviews = await showReviews("desc");
+async function showReviews(order){
+    // const querySnapshot = await getDocs(collection(db, "orders"));
+    const docsRef = collection(db, "reviews");
+    let q;
+    if(order=="asc"){
+        q = query(docsRef, orderBy("date", "asc"));
+    }else{
+        q = query(docsRef, orderBy("date", "desc"));
+    }
+     
+    const querySnapshot = await getDocs(q);
+    let reviewsListContainer = document.getElementById("reviewsListContainer");
+    reviewsListContainer.innerHTML = "";
+    querySnapshot.forEach((doc) => {
+        // doc.data() is never undefined for query doc snapshots
+        // console.log(doc.id, " => ", doc.data());
+
+        //name
+        // let firstname = doc.data().firstname;
+        // let lastname = doc.data().lastname;
+        let fullname = doc.data().user;
+
+        //date and time
+        let timestamp = doc.data().date;
+        let date = timestamp.toDate();
+        let dateFormat = date.getHours() + ":" + ("0"+date.getMinutes()).slice(-2) + ", "+ date.toDateString();
+
+        //product
+        let product = doc.data().product;
+        // let itemsList = "";
+
+        // for (let index = 0; index < cartItems.length; index++) {
+        //     const element = cartItems[index];
+        //     let item = element.productID+"["+element.quantity+"]";
+        //     if(index==cartItems.length-1){
+        //         itemsList += item;
+        //         continue;
+        //     }
+        //     itemsList += item+",";
+        // }
+
+        //rating
+        let rating = doc.data().rating;
+
+        //total
+        let review = doc.data().review;
+
+        reviewsListContainer.innerHTML += `
+        <tr style="background-color: #ffffff;">
+            <td>`+doc.id+`</td>
+            <td>`+dateFormat+`</td>
+            <td>`+fullname+`</td>
+            <td>`+product+`</td>
+            <td>`+rating+`</td>
+            <td>`+review+`</td>
+            <td>
+                <ul class="list-inline mb-0">
+                    <li class="list-inline-item">
+                        <a href="javascript:void(0);" data-bs-toggle="tooltip" data-bs-placement="top" data-productID="`+doc.id+`" title="Delete" class="px-2 text-danger showDeleteReviewModalButton"><i class="fa-solid fa-trash"></i></a>
+                    </li>
+                </ul>
+            </td>
+        </tr>
+        `
+    });
+    addDeleteReviewButtonFunctionality();
+    // addEditButtonFunctionality();
+    // addDeleteButtonFunctionality();
+    return querySnapshot;
+}
+
+// Reviews Search
+document.getElementById("reviewsSearchButton").addEventListener('click', async function() {
+    reviewsSearchFunctionality(querySnapshotReviews);
+});
+
+document.addEventListener("keyup", function(event) {
+    if (event.code === 'Enter') {
+        if(document.getElementById("reviewsSearch") === document.activeElement){
+            reviewsSearchFunctionality(querySnapshotReviews);
+        }
+    }
+});
+
+function reviewsSearchFunctionality(querySnapshotReviews){
+    var searchInput = document.getElementById("reviewsSearch").value;
+    var searchOption = document.getElementById("reviewsSearchOption").value;
+    switch (searchOption) {
+        case "id":
+            document.getElementById("reviewsListContainer").innerHTML = "";
+            querySnapshotReviews.forEach((doc) => {
+                if((doc.id.toLowerCase()).includes(searchInput.toLowerCase())){
+                    showSearchedReviews(doc.id,doc.data().date,doc.data().user,doc.data().product,doc.data().rating,doc.data().review);
+                }
+            });
+            addDeleteReviewButtonFunctionality();
+            // addEditButtonFunctionality();
+            // addDeleteButtonFunctionality();
+            break;
+        case "user":
+            document.getElementById("reviewsListContainer").innerHTML = "";
+            querySnapshotReviews.forEach((doc) => {
+                if(((doc.data().user).toLowerCase()).includes(searchInput.toLowerCase())){
+                    showSearchedReviews(doc.id,doc.data().date,doc.data().user,doc.data().product,doc.data().rating,doc.data().review);
+                }
+            });
+            addDeleteReviewButtonFunctionality();
+            break;
+        case "product":
+            document.getElementById("reviewsListContainer").innerHTML = "";
+            querySnapshotReviews.forEach((doc) => {
+                if((doc.data().product.toLowerCase()).includes(searchInput.toLowerCase())){
+                    showSearchedReviews(doc.id,doc.data().date,doc.data().user,doc.data().product,doc.data().rating,doc.data().review);
+                }
+            });
+            addDeleteReviewButtonFunctionality();
+            break;
+        case "rating >=":
+            document.getElementById("reviewsListContainer").innerHTML = "";
+            querySnapshotReviews.forEach((doc) => {
+                if(doc.data().rating >= searchInput){
+                    showSearchedReviews(doc.id,doc.data().date,doc.data().user,doc.data().product,doc.data().rating,doc.data().review);
+                }
+            });
+            addDeleteReviewButtonFunctionality();
+            break;
+        case "rating <=":
+            document.getElementById("reviewsListContainer").innerHTML = "";
+            querySnapshotReviews.forEach((doc) => {
+                if(doc.data().rating <= searchInput){
+                    showSearchedReviews(doc.id,doc.data().date,doc.data().user,doc.data().product,doc.data().rating,doc.data().review);
+                }
+            });
+            addDeleteReviewButtonFunctionality();
+            break;
+        case "comment":
+            document.getElementById("reviewsListContainer").innerHTML = "";
+            querySnapshotReviews.forEach((doc) => {
+                if((doc.data().review.toLowerCase()).includes(searchInput.toLowerCase())){
+                    showSearchedReviews(doc.id,doc.data().date,doc.data().user,doc.data().product,doc.data().rating,doc.data().review);
+                }
+            });
+            addDeleteReviewButtonFunctionality();
+            break;
+        default:
+            break;
+    }
+
+    if(searchInput==""){
+        let order = document.getElementById("reviewsSearchOrdering").value;
+        if(order=="asc"){
+            showReviews("asc");
+        }else{
+            showReviews("desc");
+        }
+        
+    }
+
+    function showSearchedReviews(id,dateInput,user,productInput,ratingInput,comment){
+
+        let fullname = user;
+
+        //date and time
+        let timestamp = dateInput;
+        let date = timestamp.toDate();
+        let dateFormat = date.getHours() + ":" + ("0"+date.getMinutes()).slice(-2) + ", "+ date.toDateString();
+
+        //product
+        let product = productInput;
+
+        //rating
+        let rating = ratingInput;
+
+        //total
+        let review = comment;
+
+        reviewsListContainer.innerHTML += `
+        <tr style="background-color: #ffffff;">
+            <td>`+id+`</td>
+            <td>`+dateFormat+`</td>
+            <td>`+fullname+`</td>
+            <td>`+product+`</td>
+            <td>`+rating+`</td>
+            <td style="word-wrap: break-word;">`+review+`</td>
+            <td>
+                <ul class="list-inline mb-0">
+                    <li class="list-inline-item">
+                        <a href="javascript:void(0);" data-bs-toggle="tooltip" data-bs-placement="top" data-productID="`+doc.id+`" title="Delete" class="px-2 text-danger showDeleteReviewModalButton"><i class="fa-solid fa-trash"></i></a>
+                    </li>
+                </ul>
+            </td>
+        </tr>
+        `
+    }
+}
+
+document.getElementById("reviewsSearchOrdering").addEventListener("change", function(){
+    console.log(this.value);
+    if(this.value == "desc"){
+        reviewsSearchFunctionality(querySnapshotReviews);
+    }
+    else{
+        reviewsSearchFunctionality(querySnapshotReviews.docs.reverse());
+    }
+});
+
+function addDeleteReviewButtonFunctionality(){
+    let editButtons = document.getElementsByClassName("showDeleteReviewModalButton");
+    for (const elem of editButtons) {
+        elem.addEventListener('click', async function() {
+
+            let reviewID = elem.getAttribute("data-productID");
+
+            document.getElementById("deleteReviewPrompt").innerHTML =
+            "Are you sure you want to delete review <b>"+reviewID+"</b>?";
+            
+            $('#deleteReviewModal').modal('show');
+
+            document.getElementById("deleteReviewButton").addEventListener('click', async function() {
+                $('#deleteReviewModal').modal('hide');
+                showSuccessToast("Processing Request", "Please Wait");
+                // console.log("stuff here");
+                deleteReview(reviewID);
+                querySnapshotReviews = await showReviews("desc");
+            });
+        });
+    }
+}
+
+async function deleteReview(reviewsID){
+    await deleteDoc(doc(db, "reviews", reviewsID)).then(function() {
+        showSuccessToast("Success", "Review has been deleted")
+    });;
 }
 
 // ************************
@@ -468,7 +751,7 @@ function productsSearchFunctionality(){
         case "price >=":
             document.getElementById("productsListContainer").innerHTML = "";
             querySnapshot.forEach((doc) => {
-                if(doc.data().price >= searchInput){
+                if(Number(doc.data().price) >= searchInput){
                     showSearchedProducts(doc.id,doc.data().name,doc.data().description,doc.data().price,doc.data().image);
                 }
             });
@@ -478,7 +761,7 @@ function productsSearchFunctionality(){
         case "price <=":
             document.getElementById("productsListContainer").innerHTML = "";
             querySnapshot.forEach((doc) => {
-                if(doc.data().price <= searchInput){
+                if(Number(doc.data().price) <= searchInput){
                     showSearchedProducts(doc.id,doc.data().name,doc.data().description,doc.data().price,doc.data().image);
                 }
             });
@@ -701,7 +984,7 @@ async function addProduct(productID, name, description, price, image){
         await setDoc(doc(db, "products", productID), {
             name: name,
             description: description,
-            price: price,
+            price: Number(price),
             image: image
         }).then( async function() {
             showSuccessToast("Success", "Product has been added");

@@ -1,6 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-app.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-auth.js";
-import { getFirestore, doc, collection, getDoc, getDocs, updateDoc } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-firestore.js";
+import { getFirestore, doc, collection, getDoc, getDocs, updateDoc, query, orderBy } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-firestore.js";
 
 const firebaseConfig = {
 
@@ -26,18 +26,28 @@ const auth = getAuth();
 
 const db = getFirestore(app);
 
-showProducts();
+showProducts(document.getElementById("orderProducts").value);
 
-async function showProducts(){
-    const querySnapshot = await getDocs(collection(db, "products"));
+async function showProducts(order){
+    const productsRef = collection(db, "products");
+    let q;
+    if(order == "price high to low"){
+        q = query(productsRef, orderBy("price", "desc"));
+    }else{
+        q = query(productsRef);
+    }
+
+    const querySnapshot = await getDocs(q);
+
+    // const querySnapshot = await getDocs(collection(db, "products"));
     let productsHTML = "";
     querySnapshot.forEach((doc) => {
     // doc.data() is never undefined for query doc snapshots
-        console.log(doc.id, " => ", doc.data());
+        // console.log(doc.id, " => ", doc.data());
         productsHTML +=
         `
-        <div class="">
-            <div class="card shadow-lg mb-5 bg-white rounded" style="width: 16rem; height:35rem; position:relative;padding-top:2rem;">
+        <div class="" style="flex: 1 0 25%;">
+            <div class="card shadow-lg mb-5 bg-white rounded" style="width: 16rem; height:35rem; position:relative;padding-top:2rem;margin:auto;">
                 <div style="overflow:hidden;">
                 <img src="`+doc.data().image+`" class="card-img-top" alt="..." style="max-height:16rem;object-fit:contain;transform:scale(1.25)">
                 </div>
@@ -62,6 +72,10 @@ async function showProducts(){
         
     }
 }
+
+document.getElementById("orderProducts").addEventListener("change", function(){
+    showProducts(this.value);
+});
 
 async function addToCart(itemID){
     onAuthStateChanged(auth, async (user) => {

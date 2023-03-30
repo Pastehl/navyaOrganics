@@ -1,6 +1,7 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-app.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-auth.js";
-import { getFirestore, doc, setDoc, collection, getDoc, getDocs, updateDoc, query, where } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-firestore.js";
+import { getFirestore, doc, setDoc, collection, getDoc, getDocs, updateDoc, query, where, Timestamp, orderBy } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-firestore.js";
+
 
 const firebaseConfig = {
 
@@ -26,9 +27,33 @@ const auth = getAuth();
 
 const db = getFirestore(app);
 
-showReviews();
-async function showReviews(){
-    const querySnapshot = await getDocs(collection(db, "reviews"));
+showReviews("default");
+async function showReviews(rating){
+    //const querySnapshot = await getDocs(collection(db, "reviews"));
+    const docsRef = collection(db, "reviews");
+    let q;
+    switch (rating) {
+        case "1":
+            q = query(docsRef, where("rating","==",1), orderBy("date", "desc"));
+            break;
+        case "2":
+            q = query(docsRef, where("rating","==",2), orderBy("date", "desc"));
+            break;
+        case "3":
+            q = query(docsRef, where("rating","==",3), orderBy("date", "desc"));
+            break;
+        case "4":
+            q = query(docsRef, where("rating","==",4), orderBy("date", "desc"));
+            break;
+        case "5":
+            q = query(docsRef, where("rating","==",5), orderBy("date", "desc"));
+            break;
+        default:
+            q = query(docsRef, orderBy("date", "desc"));
+            break;
+    }
+    
+    const querySnapshot = await getDocs(q);
     let reviewsHTML = "";
     querySnapshot.forEach((doc) => {
         // doc.data() is never undefined for query doc snapshots
@@ -67,8 +92,8 @@ async function showReviews(){
             <div style="display:flex; justify-content: center;align-items: center;">
             `+ratingHTML+`
             </div>
-            <div style="display:flex; justify-content: center;align-items: center;width:40rem;">
-            <p style="text-align:left;width:100%;margin:0;">`+doc.data().review+`</p>
+            <div style="display:flex; justify-content: center;align-items: center;width:100%;">
+            <p style="text-align:left;width:100%;margin:0;word-wrap: break-word;">`+doc.data().review+`</p>
             </div>
         </div>
 
@@ -177,6 +202,55 @@ function addStarFunc(){
         })
     }
 }
+addStarSearchFunc();
+function addStarSearchFunc(){
+    let stars = document.getElementsByClassName("ratingStarSearch")
+    for (const elem of stars) {
+        elem.addEventListener('click', function(){
+            let rating = this.getAttribute("data-rating");
+            // console.log(rating);
+
+            //revert to default
+            let starsNumber = document.getElementsByClassName("fa-solid ratingStarSearch").length;
+            if(rating==starsNumber){
+                showReviews("default");
+                document.getElementById("starsSearchDiv").innerHTML=
+                `
+                <i data-rating="1" class="fa-regular fa-star ratingStarSearch"></i>
+                <i data-rating="2" class="fa-regular fa-star ratingStarSearch"></i>
+                <i data-rating="3" class="fa-regular fa-star ratingStarSearch"></i>
+                <i data-rating="4" class="fa-regular fa-star ratingStarSearch"></i>
+                <i data-rating="5" class="fa-regular fa-star ratingStarSearch"></i>
+                `;
+                addStarSearchFunc();
+                return;
+            }else{
+                showReviews(rating);
+            }
+            let starsDiv = document.getElementById("starsSearchDiv");
+            let ratingHTML = '';
+            for (let index = 0; index < 5; index++) {
+                if(rating>0){
+                    ratingHTML+=
+                    `
+                    <i data-rating="`+Number(index+1)+`" class="fa-solid fa-star ratingStarSearch"></i>
+                    `
+                }else{
+                    ratingHTML+=
+                    `
+                    <i data-rating="`+Number(index+1)+`" class="fa-regular fa-star ratingStarSearch"></i>
+                    `
+                }
+                
+                rating--;
+            }
+            starsDiv.innerHTML = ratingHTML;
+            addStarSearchFunc();
+            
+            // addStarHoverFunc();
+        })
+    }
+}
 
 let prevStars = document.getElementById("starsDiv").innerHTML;
 
@@ -262,13 +336,20 @@ async function createReview(userID){
     let username = userSnap.data().firstname + " " + userSnap.data().lastname
     let userImage = userSnap.data().image;
 
+    if (userImage == null || userImage == undefined){
+        let placeholder = "https://firebasestorage.googleapis.com/v0/b/navya-organics.appspot.com/o/products%2F146-1468281_profile-icon-png-transparent-profile-picture-icon-png.jpg?alt=media&token=7d333dd9-3cd5-48d6-bab5-838c22db1967"
+        userImage = placeholder
+    }
+
     await setDoc(doc(db, "reviews", makeid(15)), {
         product: product,
         productImage: productImage,
         rating: starRating,
         review: reviewTextArea,
         user: username,
-        userImage: userImage
+        userImage: userImage,
+        date: Timestamp.fromDate(new Date()),
+        userID: userID
     }).then(function(){
         showSuccessToast("Success", "Your review is now posted");
         $('#newReviewModal').modal('hide');

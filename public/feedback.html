@@ -73,7 +73,27 @@
   </div>
 
     <h1 style="margin:2rem auto 1rem; text-align: center; font-weight:600;">Customer Feedback</h1>
-    <div id="reviewsContainer" class="rounded d-flex flex-column align-items-center" style="background-color:#e3d3bc;margin:auto;width:96%;height:25rem;padding:2rem;overflow: auto;">
+    <div class="d-flex" style="background-color:#e3d3bc;margin:auto;width:96%;padding:0.5rem">
+      <div style="height:1rem;text-align: right;margin:0.4rem 0.5rem 0 0;">
+        Rating:
+      </div>
+      <div class="col-md-4.2">
+        <style>
+          .ratingStarSearch:hover{
+            cursor: pointer;
+          }
+        </style>
+        <div id="starsSearchDiv" style="margin-top:0.4rem">
+          <i data-rating="1" class="fa-regular fa-star ratingStarSearch"></i>
+          <i data-rating="2" class="fa-regular fa-star ratingStarSearch"></i>
+          <i data-rating="3" class="fa-regular fa-star ratingStarSearch"></i>
+          <i data-rating="4" class="fa-regular fa-star ratingStarSearch"></i>
+          <i data-rating="5" class="fa-regular fa-star ratingStarSearch"></i>
+        </div>
+      </div>
+    </div>
+    </div>
+    <div id="reviewsContainer" class="rounded d-flex flex-column align-items-center" style="background-color:#e3d3bc;margin:auto;width:96%;height:85%;padding:2rem;overflow: auto;">
       <!-- <div class="rounded shadow-lg" style="background-color:#fefcf9;height:6rem;width:98%;margin-bottom:1rem;display:flex;column-gap:1rem;padding:0.5rem;">
         <div style="display:flex; justify-content: center;align-items: center;">
           <img class="rounded img-fluid" src="./assets/navya_logo_large.webp" style="width:2rem;height:2rem;border:solid 1px black;object-fit:cover;">

@@ -1,6 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-app.js";
 import { getAuth, onAuthStateChanged, signOut, sendEmailVerification, sendSignInLinkToEmail } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-auth.js";
-import { getFirestore, getDoc, getDocs, doc, updateDoc, collection, query, where, orderBy} from "https://www.gstatic.com/firebasejs/9.17.1/firebase-firestore.js";
+import { getFirestore, getDoc, getDocs, doc, deleteDoc, updateDoc, collection, query, where, orderBy} from "https://www.gstatic.com/firebasejs/9.17.1/firebase-firestore.js";
 import { getStorage, ref, uploadBytes, uploadBytesResumable, getDownloadURL } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-storage.js";
 
 const firebaseConfig = {
@@ -46,11 +46,11 @@ onAuthStateChanged(auth, (user) => {
         if(isVerified){
             let verifyButton = document.getElementById("verify");
             verifyButton.disabled = true;
-            verifyButton.innerHTML = "Verified"
+            verifyButton.innerHTML = "Verified";
         }
     } else {
         showDangerAlert();
-        window.location.href = "index.html";
+        // window.location.href = "index.html";
     }
 });
 
@@ -123,8 +123,40 @@ async function showOrders(){
                     itemsList += item+"<br>";
                 }
 
-                let status = (docItem.data().status).toUpperCase();
-                if(docItem.data().status=="awaitingPayment"){
+                let status = (docItem.data().status);
+                switch (status) {
+                    case 'pending':
+                        status = 'Pending'
+                        break;
+                    case 'awaitingPayment':
+                        status = 'Awaiting Payment'
+                        break;
+                    case 'paid':
+                        status = 'Paid'
+                        break;
+                    case 'beingMade':
+                        status = 'Being Made'
+                        break;
+                    case 'beingDelivered':
+                        status = 'Out for Delivery'
+                        break;
+                    case 'delivered':
+                        status = 'Delivered'
+                        break;
+                    case 'Cancelled - Product Unavailable':
+                        status = 'Cancelled - Product Unavailable'
+                        break;
+                    case 'Cancelled - User Info Incomplete':
+                        status = 'Cancelled - User Info Incomplete'
+                        break;
+                    case 'Cancelled - Address out of Coverage Area':
+                        status = 'Cancelled - Address out of Coverage Area'
+                        break;
+                    
+                    default:
+                        break;
+                }
+                if(status=="Awaiting Payment"){
                     status = `<a class="gcashClickable" style="cursor:pointer;">`+status+`</a>`
                 }
 
@@ -144,17 +176,75 @@ async function showOrders(){
                     <td>`+itemsList+`</td>
                     `+statusHTML+`
                     <td>Php `+parseFloat(total).toFixed(2)+`</td>
+                    <td>
+                        <li class="list-inline-item">
+                            <a href="javascript:void(0);" data-bs-toggle="tooltip" data-bs-placement="top" data-productID="`+orderID+`" title="Delete" class="px-2 text-danger showCancelOrderButton"><i class="fa-solid fa-ban"></i></a>
+                        </li>
+                    </td>
                 </tr>
                 `
 
                 addGcashModalFunc();
             });
+            addCancelOrderButtonFunctionality();
         }
     });
+    
     // addManageButtonFunctionality();
     // addEditButtonFunctionality();
     // addDeleteButtonFunctionality();
     // return querySnapshot;
+}
+
+function addCancelOrderButtonFunctionality(){
+    let editButtons = document.getElementsByClassName("showCancelOrderButton");
+    for (const elem of editButtons) {
+        elem.addEventListener('click', async function() {
+
+            let orderID = elem.getAttribute("data-productID");
+
+            document.getElementById("cancelOrderPrompt").innerHTML =
+            "Are you sure you want to cancel your order?";
+            
+            $('#cancelOrderModal').modal('show');
+
+            //reset event listeners
+            var old_element = document.getElementById("cancelOrderButton");
+            var new_element = old_element.cloneNode(true);
+            old_element.parentNode.replaceChild(new_element, old_element);
+
+            document.getElementById("cancelOrderButton").addEventListener('click', async function() {
+                $('#cancelOrderModal').modal('hide');
+                showSuccessToast("Processing Request", "Please Wait");
+                // console.log("stuff here");
+                cancelOrder(orderID);
+            });
+        });
+    }
+};
+
+async function cancelOrder(orderID){
+    const docRef = doc(db, "orders", orderID);
+    const docSnap = await getDoc(docRef);
+
+    let status = docSnap.data().status;
+
+    if(status == "pending" || status == "awaitingPayment" || status == "paid" || status == "beingMade"){
+        await updateDoc(docRef, {
+            status: "Cancelled - Cancelled by Customer"
+        }).then(function(){
+            showSuccessToast("Success", "Your order has been cancelled");
+        });
+    }else if(status == "beingDelivered"){
+        showErrorToast("Cannot be Cancelled","Your order is out for delivery.");
+    }
+    else if(status == "delivered"){
+        showErrorToast("Cannot be Cancelled","Your order has already been delivered.");
+    }
+    else{
+        showErrorToast("Cannot be Cancelled","Order has already been cancelled.");
+    }
+    querySnapshotReviews = await showOrders("desc");
 }
 
 function addGcashModalFunc(){
@@ -164,6 +254,243 @@ function addGcashModalFunc(){
             $('#myModal').modal('show');
         });
     }
+}
+
+// ****************
+
+// Manage Reviews
+
+// ****************
+
+var querySnapshotReviews = await showReviews("desc");
+async function showReviews(order){
+    onAuthStateChanged(auth, async (user) => {
+        if(user){
+            // const querySnapshot = await getDocs(collection(db, "orders"));
+            const docsRef = collection(db, "reviews");
+            let q;
+            if(order=="asc"){
+                q = query(docsRef, where("userID","==",user.uid), orderBy("date", "asc"));
+            }else{
+                q = query(docsRef, where("userID","==",user.uid), orderBy("date", "desc"));
+            }
+            
+            const querySnapshot = await getDocs(q);
+            let reviewsListContainer = document.getElementById("reviewsListContainer");
+            reviewsListContainer.innerHTML = "";
+            querySnapshot.forEach((doc) => {
+                // doc.data() is never undefined for query doc snapshots
+                // console.log(doc.id, " => ", doc.data());
+
+                //name
+                // let firstname = doc.data().firstname;
+                // let lastname = doc.data().lastname;
+                let fullname = doc.data().user;
+
+                //date and time
+                let timestamp = doc.data().date;
+                let date = timestamp.toDate();
+                let dateFormat = date.getHours() + ":" + ("0"+date.getMinutes()).slice(-2) + ", "+ date.toDateString();
+
+                //product
+                let product = doc.data().product;
+                // let itemsList = "";
+
+                // for (let index = 0; index < cartItems.length; index++) {
+                //     const element = cartItems[index];
+                //     let item = element.productID+"["+element.quantity+"]";
+                //     if(index==cartItems.length-1){
+                //         itemsList += item;
+                //         continue;
+                //     }
+                //     itemsList += item+",";
+                // }
+
+                //rating
+                let rating = doc.data().rating;
+
+                //total
+                let review = doc.data().review;
+
+                reviewsListContainer.innerHTML += `
+                <tr style="background-color: #ffffff;">
+                    <td>`+dateFormat+`</td>
+                    <td>`+product+`</td>
+                    <td>`+rating+`</td>
+                    <td style="word-wrap: break-word;">`+review+`</td>
+                    <td>
+                        <ul class="list-inline mb-0">
+                            <li class="list-inline-item">
+                                <a href="javascript:void(0);" data-bs-toggle="tooltip" data-bs-placement="top" data-productID="`+doc.id+`" title="Edit" class="px-2 text-primary showEditModalButton"><i class="fa-solid fa-pen"></i></a>
+                            </li>
+                            <li class="list-inline-item">
+                                <a href="javascript:void(0);" data-bs-toggle="tooltip" data-bs-placement="top" data-productID="`+doc.id+`" title="Delete" class="px-2 text-danger showDeleteReviewModalButton"><i class="fa-solid fa-trash"></i></a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+                `
+            });
+            addEditReviewButtonFunctionality();
+            addDeleteReviewButtonFunctionality();
+           
+            // addEditButtonFunctionality();
+            // addDeleteButtonFunctionality();
+            return querySnapshot;
+        }
+    });
+}
+
+document.getElementById("reviewsSearchOrdering").addEventListener("change", function(){
+    console.log(this.value);
+    if(this.value == "desc"){
+        showReviews("desc");
+    }
+    else{
+        showReviews("asc");
+    }
+});
+
+function addEditReviewButtonFunctionality(){
+    let editButtons = document.getElementsByClassName("showEditModalButton");
+    for (const elem of editButtons) {
+        elem.addEventListener('click', async function() {
+            document.getElementById("reviewTextAreaLabel").innerHTML = "Comments (0/150)";
+            
+            let reviewsID = elem.getAttribute("data-productID");
+
+            const docRef = doc(db, "reviews", reviewsID);
+            const docSnap = await getDoc(docRef);
+            document.getElementById("reviewTextArea").value = docSnap.data().review;
+            let product = docSnap.data().product;
+            
+            document.getElementById("productSelectOption").innerHTML =
+                `
+                <option value="`+product+`" selected>`+product+`</option>
+                `;
+
+            let ratingScore = docSnap.data().rating;
+            let starsDiv = document.getElementById('starsDiv');
+
+            let ratingHTML = "";
+            for (let index = 0; index < 5; index++) {
+                if(ratingScore>0){
+                    ratingHTML+=
+                    `
+                    <i data-rating="`+Number(index+1)+`" class="fa-solid fa-star ratingStar"></i>
+                    `
+                }else{
+                    ratingHTML+=
+                    `
+                    <i data-rating="`+Number(index+1)+`" class="fa-regular fa-star ratingStar"></i>
+                    `
+                }
+                
+                ratingScore--;
+            }
+            starsDiv.innerHTML = ratingHTML;
+            addStarFunc();
+
+            document.getElementById("updateReviewButton").addEventListener("click", function(){
+                updateReview(reviewsID);
+            });
+            
+            $('#newReviewModal').modal('show');
+        });
+    }
+}
+
+document.getElementById("reviewTextArea").addEventListener('input', function(){
+    let inputString = document.getElementById("reviewTextArea").value;
+    // console.log(inputString);
+    // console.log(inputString.length);
+    document.getElementById("reviewTextAreaLabel").innerHTML = "Comments ("+inputString.length+"/150)";
+});
+
+function addStarFunc(){
+    let stars = document.getElementsByClassName("ratingStar")
+    for (const elem of stars) {
+        elem.addEventListener('click', function(){
+            let rating = this.getAttribute("data-rating");
+            let starsDiv = document.getElementById("starsDiv");
+            let ratingHTML = '';
+            for (let index = 0; index < 5; index++) {
+                if(rating>0){
+                    ratingHTML+=
+                    `
+                    <i data-rating="`+Number(index+1)+`" class="fa-solid fa-star ratingStar"></i>
+                    `
+                }else{
+                    ratingHTML+=
+                    `
+                    <i data-rating="`+Number(index+1)+`" class="fa-regular fa-star ratingStar"></i>
+                    `
+                }
+                
+                rating--;
+            }
+            starsDiv.innerHTML = ratingHTML;
+            // prevStars = ratingHTML;
+            addStarFunc();
+            // addStarHoverFunc();
+        })
+    }
+}
+
+async function updateReview(reviewID){
+
+    var productOption = document.getElementById("productSelectOption").value;
+
+    let starRating = document.getElementsByClassName("fa-solid ratingStar").length;
+
+    if(starRating < 1){
+        showErrorToast("No Rating Given", "Please choose a star rating")
+        return;
+    }
+
+    let reviewTextArea = document.getElementById("reviewTextArea").value;
+
+    showSuccessToast("Processing Request", "Please Wait");
+
+    const docRef = doc(db, "reviews", reviewID);
+
+    await updateDoc(docRef, {
+        product: productOption,
+        rating: starRating,
+        review: reviewTextArea
+    }).then(function(){
+        showSuccessToast("Success", "Review Updated");
+        $('#newReviewModal').modal('hide');
+    });
+}
+
+function addDeleteReviewButtonFunctionality(){
+    let editButtons = document.getElementsByClassName("showDeleteReviewModalButton");
+    for (const elem of editButtons) {
+        elem.addEventListener('click', async function() {
+
+            let reviewID = elem.getAttribute("data-productID");
+
+            document.getElementById("deleteReviewPrompt").innerHTML =
+            "Are you sure you want to delete your review?";
+            
+            $('#deleteReviewModal').modal('show');
+
+            document.getElementById("deleteReviewButton").addEventListener('click', async function() {
+                $('#deleteReviewModal').modal('hide');
+                showSuccessToast("Processing Request", "Please Wait");
+                // console.log("stuff here");
+                deleteReview(reviewID);
+                querySnapshotReviews = await showReviews("desc");
+            });
+        });
+    }
+}
+
+async function deleteReview(reviewsID){
+    await deleteDoc(doc(db, "reviews", reviewsID)).then(function() {
+        showSuccessToast("Success", "Review has been deleted")
+    });;
 }
 
 // ****************
@@ -405,41 +732,41 @@ document.getElementById('verify').onclick = function(e){
         if (user) {
             // console.log(user);
             sendEmailVerification(user, actionCodeSettings);
-            showSuccessToast();
+            showSuccessToast("Email Verification Sent","Please check your email to continue verification");
             //user.currentUser;
             //sendVerificationEmail(user.email)
 
         } else {
-            showErrorToast();
+            showErrorToast("Error Sending Email","Please try again later");
         }
     });
 }
 
 // Toasts
-function showSuccessToast(){
+function showSuccessToast(header, message){
     removeElementsByClass("hide");
     document.getElementById("toastsContainer").innerHTML += `
     <div class="toast" data-autohide="false" >
       <div class="toast-header">
-        <strong class="mr-auto text-primary">Email Verification Sent</strong>
+        <strong class="mr-auto text-primary">`+header+`</strong>
       </div>
       <div class="toast-body">
-        Please check your email to continue verification
+        `+message+`
       </div>
     </div>
     `
     showToasts();
 }
 
-function showErrorToast(){
+function showErrorToast(header, message){
     removeElementsByClass("hide");
     document.getElementById("toastsContainer").innerHTML += `
     <div class="toast" data-autohide="false" >
       <div class="toast-header">
-        <strong class="mr-auto text-danger">Error Sending Email</strong>
+        <strong class="mr-auto text-danger">`+header+`</strong>
       </div>
       <div class="toast-body">
-        Please try again later
+        `+message+`
       </div>
     </div>
     `
