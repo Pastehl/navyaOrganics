@@ -28,11 +28,18 @@ const db = getFirestore(app);
 
 function processForm(e) {
     if (e.preventDefault) e.preventDefault();
-
+    $('#exampleModalLong').modal('show');
     /* do what you want with the form */
     var email = document.getElementById('userEmail').value;
     var password = document.getElementById('userPassword').value;
-    createUser(email, password);
+    document.getElementById('close').addEventListener('click', function(){
+      $('#exampleModalLong').modal('hide');
+    })
+    document.getElementById('proceed').addEventListener('click', function(){
+      $('#exampleModalLong').modal('hide');
+      createUser(email, password);
+    })
+    
 
     // You must return false to prevent the default form behavior
     return false;
