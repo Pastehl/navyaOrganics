@@ -919,7 +919,15 @@ document.getElementById("newProductPriceInput").addEventListener('keypress', fun
     }
 });
 
+document.getElementById("newProductQuantityInput").addEventListener('keypress', function (e){
+        const key = e.key;
+         if(key == "."){
+             e.preventDefault();
+         }})
+
+
 // create new product
+
 document.getElementById("createNewProductButton").addEventListener('click', async function() {
     let productID = document.getElementById("newProductIDInput").value;
     let name = document.getElementById("newProductNameInput").value;
@@ -930,6 +938,7 @@ document.getElementById("createNewProductButton").addEventListener('click', asyn
     // input validation check
     let inputs = document.getElementsByClassName("newProductFormInput");
     for (const elem of inputs) {
+        
         if(elem.classList.contains("is-invalid") || elem.value==""){
             // console.log(elem, elem.value)
             // console.log("thingy");
