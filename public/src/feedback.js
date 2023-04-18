@@ -61,8 +61,15 @@ async function showReviews(rating){
         
         let rating = doc.data().rating;
         let ratingHTML = '';
+        let review = doc.data().review;
+
+        let reviewDisabled = doc.data().reviewDisabled;
+        if(reviewDisabled != undefined){
+            review = "Comment has been disabled due to violation of Terms and Service."
+        }
 
         for (let index = 0; index < 5; index++) {
+
             if(rating>0){
                 ratingHTML+=
                 `
@@ -93,7 +100,7 @@ async function showReviews(rating){
             `+ratingHTML+`
             </div>
             <div style="display:flex; justify-content: center;align-items: center;width:100%;">
-            <p style="text-align:left;width:100%;margin:0;word-wrap: break-word;">`+doc.data().review+`</p>
+            <p style="text-align:left;width:100%;margin:0;word-wrap: break-word;">`+review+`</p>
             </div>
         </div>
 
@@ -350,7 +357,8 @@ async function createReview(userID){
         userImage: userImage,
         date: Timestamp.fromDate(new Date()),
         userID: userID,
-        editCount: 2
+        editCount: 2,
+        reviewDisabled: Boolean(false)
     }).then(function(){
         showSuccessToast("Success", "Your review is now posted");
         $('#newReviewModal').modal('hide');

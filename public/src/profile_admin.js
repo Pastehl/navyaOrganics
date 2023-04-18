@@ -469,6 +469,11 @@ async function showReviews(order){
 
         //total
         let review = doc.data().review;
+        let reviewDisabled = doc.data().reviewDisabled;
+        if(reviewDisabled === true){
+            review = "Comment has been disabled due to violation of Terms and Service."
+        }
+
 
         reviewsListContainer.innerHTML += `
         <tr style="background-color: #ffffff;">
@@ -653,9 +658,12 @@ function addDeleteReviewButtonFunctionality(){
 }
 
 async function deleteReview(reviewsID){
-    await deleteDoc(doc(db, "reviews", reviewsID)).then(function() {
-        showSuccessToast("Success", "Review has been deleted")
-    });;
+    await updateDoc(doc(db, "reviews", reviewsID)).then(function() {
+            reviewDisabled: Boolean(true)
+        }).then( async function() {
+            showSuccessToast("Success", "Review has been deleted")
+        });
+       
 }
 
 // ************************
