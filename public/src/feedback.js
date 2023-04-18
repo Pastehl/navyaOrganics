@@ -349,7 +349,8 @@ async function createReview(userID){
         user: username,
         userImage: userImage,
         date: Timestamp.fromDate(new Date()),
-        userID: userID
+        userID: userID,
+        editCount: 2
     }).then(function(){
         showSuccessToast("Success", "Your review is now posted");
         $('#newReviewModal').modal('hide');

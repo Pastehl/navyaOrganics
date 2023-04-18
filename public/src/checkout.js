@@ -1,6 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-app.js";
 import { getAuth, onAuthStateChanged, signOut, sendEmailVerification, sendSignInLinkToEmail } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-auth.js";
-import { getFirestore, doc, collection, getDoc, setDoc, getDocs, updateDoc, deleteDoc, Timestamp } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-firestore.js";
+import { getFirestore, doc, collection, getDoc, setDoc, getDocs, updateDoc, deleteDoc, Timestamp, runTransaction, increment } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-firestore.js";
 import { getStorage, ref, uploadBytes, uploadBytesResumable, getDownloadURL } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-storage.js";
 
 const firebaseConfig = {
@@ -187,6 +187,14 @@ async function doubleConfirmOrder(){
         if(user){
             const docRef = doc(db, "users", user.uid);
             const docSnap = await getDoc(docRef);
+            
+            // Get a reference to the "counters" collection
+            const countersRef = collection(db, "orders");
+
+            // Get the current value of the "documents" counter
+            const docCounterRef = doc(countersRef, "placeholderID");
+            const docCounterSnapshot = await getDoc(docCounterRef);
+            const currentId = docCounterSnapshot.exists() ? docCounterSnapshot.data().currentOrderId : 0;
 
             let userID = user.uid;
             let firstname = docSnap.data().firstname;
@@ -199,41 +207,65 @@ async function doubleConfirmOrder(){
             let cartItems = docSnap.data().cartItems;
             let orders = docSnap.data().orders;
 
-            let orderID = makeid(15);
+            const orderID = currentId + 1;
 
             let totalAmount = await calculateCartTotal(user.uid);
 
+            let status = paymentMethod.toUpperCase();
+            
             if(orders==null){
                 orders = []
-                orders.push({orderID:orderID,status:"pending"});
+                orders.push({orderID:orderID,status:status});
             }else{
-                orders.push({orderID:orderID,status:"pending"});
+                orders.push({orderID:orderID,status:status});
             }
+            // await setDoc(doc(db, "users" ,"placeholderID"),{
+            //     transactionID,orderID
+            // })
+            // Use a transaction to increment the counter and create a new document
+            await runTransaction(db, async (transaction) => {
+                 // Increment the counter
+                //const orderID = currentId + 1;
+                await updateDoc(docCounterRef, { currentOrderId: orderID });
+                // console.log(typeof orderID);
+                
+                for (let index = 0; index < cartItems.length; index++) {
+                    const element = cartItems[index];
+                    let productID = element.productID;
+                    let quantity = element.quantity;
+                    const washingtonRef = doc(db, "products", productID);
 
-            await setDoc(doc(db, "orders", orderID), {
-                userID, userID,
-                firstname: firstname,
-                lastname: lastname,
-                mobile: mobile,
-                address1: address1,
-                address2: address2,
-                postal: postal,
-                province: province,
-                cartItems: cartItems,
-                total: totalAmount,
-                paymentMethod: paymentMethod,
-                date: Timestamp.fromDate(new Date()),
-                status: "pending"
-            }).then(async function(){
+                    // Atomically increment the population of the city by 50.
+                    await updateDoc(washingtonRef, {
+                        qty: increment(Number(quantity*(-1)))
+                    });
+                    }
+
+                await setDoc(doc(db, "orders", String(orderID)), {
+                    userID, userID,
+                    firstname: firstname,
+                    lastname: lastname,
+                    mobile: mobile,
+                    address1: address1,
+                    address2: address2,
+                    postal: postal,
+                    province: province,
+                    cartItems: cartItems,
+                    total: totalAmount,
+                    paymentMethod: paymentMethod,
+                    date: Timestamp.fromDate(new Date()),
+                    status: status
+                })
                 const userRef = doc(db, "users", userID);
-                await updateDoc(userRef, {
-                    cartItems: [],
-                    orders: orders
-                }).then(function(){
-                    showSuccessToast("Order Placed", "You will now be redirected");
-                    window.location.href = "profile_user.html";
-                });
+                    await updateDoc(userRef, {
+                        cartItems: [],
+                        orders: orders
+                    }).then(function(){
+                        showSuccessToast("Order Placed", "You will now be redirected");
+                        window.location.href = "profile_user.html";
+                    });
             });
+
         }
     })
 }

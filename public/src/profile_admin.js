@@ -675,6 +675,14 @@ async function showProducts(){
     querySnapshot.forEach((doc) => {
         // doc.data() is never undefined for query doc snapshots
         // console.log(doc.id, " => ", doc.data());
+        let quantity = doc.data().qty;
+
+        let statusHTML = "<td>"+quantity+"</td>"
+
+        if (Number(quantity) <= 5) {
+            statusHTML = `<td class="text-danger">`+quantity+`</td>`
+        }
+
         productsListContainer.innerHTML += `
         <tr style="background-color: #ffffff;">
             <td>`+doc.id+`</td>
@@ -682,6 +690,7 @@ async function showProducts(){
             <td><img src="`+doc.data().image+`" class="card-img-top" alt="..." style="height:3rem;width: auto;"></td>
             <td>`+doc.data().description+`</td>
             <td>Php `+parseFloat(doc.data().price).toFixed(2)+`</td>
+            `+statusHTML+`
             <td>
                 <ul class="list-inline mb-0">
                     <li class="list-inline-item">
@@ -808,24 +817,28 @@ document.getElementById("showNewProductModalButton").addEventListener('click', a
     let productImage = document.getElementById("newProductImageInput")
     let productDescription = document.getElementById("newProductDescriptionInput")
     let productPrice = document.getElementById("newProductPriceInput")
+    let productQuantity =  document.getElementById("newProductQuantityInput")
 
     productID.value = "";
     productName.value = "";
     productImage.value = "";
     productDescription.value = "";
     productPrice.value = "";
+    productQuantity.value = "";
 
     productID.classList.remove("is-valid");
     productName.classList.remove("is-valid");
     productImage.classList.remove("is-valid");
     productDescription.classList.remove("is-valid");
     productPrice.classList.remove("is-valid");
+    productQuantity.classList.remove("is-valid");
 
     productID.classList.remove("is-invalid");
     productName.classList.remove("is-invalid");
     productImage.classList.remove("is-invalid");
     productDescription.classList.remove("is-invalid");
     productPrice.classList.remove("is-invalid");
+    productQuantity.classList.remove("is-invalid");
 });
 
 // input validation
@@ -906,6 +919,23 @@ document.getElementById("newProductPriceInput").addEventListener('change', async
     }
 });
 
+document.getElementById("newProductQuantityInput").addEventListener('change', async function() {
+    if(this.value==""){
+        this.classList.remove("is-valid");
+        this.classList.remove("is-invalid");
+        return;
+    }
+    if(Number(this.value)<0){
+        this.classList.remove("is-valid");
+        this.classList.add("is-invalid");
+        return;
+    }
+    if(this.value!=""){
+        this.classList.remove("is-invalid");
+        this.classList.add("is-valid");
+    }
+});
+
 document.getElementById("newProductPriceInput").addEventListener('keypress', function (e) {
     // Get the code of pressed key
     const key = e.key;
@@ -934,11 +964,11 @@ document.getElementById("createNewProductButton").addEventListener('click', asyn
     let imageElement = document.getElementById("newProductImageInput");
     let description = document.getElementById("newProductDescriptionInput").value;
     let price = document.getElementById("newProductPriceInput").value;
+    let quantity = document.getElementById("newProductQuantityInput").value;
 
     // input validation check
     let inputs = document.getElementsByClassName("newProductFormInput");
     for (const elem of inputs) {
-        
         if(elem.classList.contains("is-invalid") || elem.value==""){
             // console.log(elem, elem.value)
             // console.log("thingy");
@@ -966,7 +996,7 @@ document.getElementById("createNewProductButton").addEventListener('click', asyn
                 ()=>{
                     getDownloadURL(UploadTask.snapshot.ref).then((downloadURL)=>{
                         // console.log(downloadURL);
-                        addProduct(productID, name, description, price, downloadURL).then(function(){
+                        addProduct(productID, name, description, price, downloadURL, quantity).then(function(){
                             $('#myModal').modal('hide');
                         });
                         // const userDBRef = doc(db, "users", user.uid);
@@ -983,7 +1013,7 @@ document.getElementById("createNewProductButton").addEventListener('click', asyn
     }
 });
 
-async function addProduct(productID, name, description, price, image){
+async function addProduct(productID, name, description, price, image, quantity){
     const docRef = doc(db, "products", productID);
     const docSnap = await getDoc(docRef);
 
@@ -994,7 +1024,8 @@ async function addProduct(productID, name, description, price, image){
             name: name,
             description: description,
             price: Number(price),
-            image: image
+            image: image,
+            qty: Number(quantity)
         }).then( async function() {
             showSuccessToast("Success", "Product has been added");
             querySnapshot = await showProducts();
@@ -1013,6 +1044,7 @@ function addEditButtonFunctionality(){
             document.getElementById("updateProductImageInput").value = "";
             document.getElementById("updateProductDescriptionInput").value = "";
             document.getElementById("updateProductPriceInput").value = "";
+            document.getElementById("updateProductQuantityInput").value = "";
 
             let productID = elem.getAttribute("data-productID");
             console.log(productID);
@@ -1024,10 +1056,13 @@ function addEditButtonFunctionality(){
             document.getElementById("updateProductNameInput").value = docSnap.data().name;
             document.getElementById("updateProductDescriptionInput").value = docSnap.data().description;
             document.getElementById("updateProductPriceInput").value = docSnap.data().price;
+            document.getElementById("updateProductQuantityInput").value = docSnap.data().qty;
 
             document.getElementById("updateProductNameInput").classList.add("is-valid");
             document.getElementById("updateProductDescriptionInput").classList.add("is-valid");
             document.getElementById("updateProductPriceInput").classList.add("is-valid");
+            document.getElementById("updateProductQuantityInput").classList.add("is-valid");
+
             
             $('#updateItemModal').modal('show');
         });
@@ -1094,7 +1129,22 @@ document.getElementById("updateProductPriceInput").addEventListener('change', as
         this.classList.add("is-valid");
     }
 });
-
+document.getElementById("updateProductQuantityInput").addEventListener('change', async function() {
+    if(this.value==""){
+        this.classList.remove("is-valid");
+        this.classList.remove("is-invalid");
+        return;
+    }
+    if(Number(this.value)<0){
+        this.classList.remove("is-valid");
+        this.classList.add("is-invalid");
+        return;
+    }
+    if(this.value!=""){
+        this.classList.remove("is-invalid");
+        this.classList.add("is-valid");
+    }
+});
 document.getElementById("updateProductPriceInput").addEventListener('keypress', function (e) {
     // Get the code of pressed key
     const key = e.key;
@@ -1107,6 +1157,11 @@ document.getElementById("updateProductPriceInput").addEventListener('keypress', 
         e.preventDefault();
     }
 });
+document.getElementById("updateProductQuantityInput").addEventListener('keypress', function (e){
+    const key = e.key;
+     if(key == "."){
+         e.preventDefault();
+     }})
 
 // update product
 document.getElementById("updateProductButton").addEventListener('click', async function() {
@@ -1115,6 +1170,7 @@ document.getElementById("updateProductButton").addEventListener('click', async f
     let imageElement = document.getElementById("updateProductImageInput");
     let description = document.getElementById("updateProductDescriptionInput").value;
     let price = document.getElementById("updateProductPriceInput").value;
+    let quantity = document.getElementById("updateProductQuantityInput").value;
 
     // input validation check
     let inputs = document.getElementsByClassName("updateProductFormInput");
@@ -1154,7 +1210,7 @@ document.getElementById("updateProductButton").addEventListener('click', async f
                 ()=>{
                     getDownloadURL(UploadTask.snapshot.ref).then((downloadURL)=>{
                         // console.log(downloadURL);
-                        updateProduct(productID, name, description, price, downloadURL).then(function(){
+                        updateProduct(productID, name, description, price, downloadURL, quantity).then(function(){
                             $('#updateItemModal').modal('hide');
                         });
                     });
@@ -1163,19 +1219,20 @@ document.getElementById("updateProductButton").addEventListener('click', async f
         }
     }else{
         // console.log("no new Image");
-        updateProduct(productID, name, description, price, "").then(function(){
+        updateProduct(productID, name, description, price, "" , quantity).then(function(){
             $('#updateItemModal').modal('hide');
         });
     }
 });
 
-async function updateProduct(productID, name, description, price, image){
+async function updateProduct(productID, name, description, price, image, quantity){
     if(image == "" || image == null){
         const docRef = doc(db, "products", productID);
         await updateDoc(docRef, {
             name: name,
             description: description,
-            price: price
+            price: price,
+            qty: Number(quantity)
         }).then(async function() {
             showSuccessToast("Success", "Product has been updated");
             querySnapshot = await showProducts();
@@ -1186,7 +1243,8 @@ async function updateProduct(productID, name, description, price, image){
             name: name,
             description: description,
             price: price,
-            image: image
+            image: image,
+            qty: Number(quantity)
         }).then(async function() {
             showSuccessToast("Success", "Product has been updated");
             querySnapshot = await showProducts();

@@ -54,6 +54,7 @@ async function showProducts(order){
                 <div class="card-body">
                     <h6 class="card-title"><b>`+doc.data().name+`</b></h6>
                     <h6 class="card-subtitle mb-2 text-muted">₱`+parseFloat(doc.data().price).toFixed(2)+`</h6>
+                    <h6 class="card-subtitle mb-2 text-muted">Units left: `+doc.data().qty+`</h6>
                     <p class="card-text" style="font-size:0.7rem;text-align:justify;">`+doc.data().description+`</p>
                     <a data-item-id="`+doc.id+`" class="btn btn-primary cart-button" style="position:absolute;bottom:1rem;"><i class="fas  fa-shopping-cart"></i> Add to cart</a>
                 </div>

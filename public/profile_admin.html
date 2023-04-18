@@ -74,10 +74,17 @@
   <div class="d-flex flex-column flex-lg-grow-1 bg-light" style="width: 3.5rem; position: absolute; z-index:1; height: 100%;">
     <ul class="nav nav-pills nav-flush flex-column mb-auto text-center">
       <li class="nav-item">
-        <a data-label="ordersContainer" style="cursor: pointer;" class="nav-link active py-3 border-bottom sidebarButton" aria-current="page" title="" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-original-title="Home">
+        <a data-label="dashboardContainer" style="cursor: pointer;" class="nav-link active py-3 border-bottom sidebarButton" aria-current="page" title="" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-original-title="Home">
+          <i class="fa-solid fa-house fa-lg"></i>
+        </a>
+      </li>
+
+      <li>
+        <a data-label="ordersContainer" style="cursor: pointer;" class="nav-link py-3 border-bottom sidebarButton" title="" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-original-title="Dashboard">
           <i class="fa-solid fa-clipboard fa-lg"></i>
         </a>
       </li>
+
       <li>
         <a data-label="productsContainer" style="cursor: pointer;" class="nav-link py-3 border-bottom sidebarButton" title="" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-original-title="Dashboard">
           <i class="fa-solid fa-box fa-lg"></i>
@@ -119,7 +126,7 @@
             <input type="text" class="form-control newProductFormInput" id="newProductNameInput" aria-describedby="emailHelp" placeholder="ex. XL Brown Box">
             <label for="productIDInput">Image</label>
             <input class="form-control newProductFormInput" type="file" id="newProductImageInput" accept="image/x-png,image/gif,image/jpeg">
-            <div id="validationServerUsernameFeedback" class="invalid-feedback">
+            <div id="validationServerUsernameFeedback" class="invalid-feedback">  
               File size too big. Please upload an image 2MB or less.
             </div>
             <label for="productIDInput">Description</label>
@@ -127,7 +134,7 @@
             <label for="productIDInput">Price</label>
             <input type="text" class="form-control newProductFormInput" id="newProductPriceInput" aria-describedby="emailHelp" placeholder="ex. 120.50" pattern="[0-9!@#$%^*_|]">
             <label for="productIDInput">Quantity</label>
-            <input type="text" class="form-control newProductFormInput" id="newProductQuantityInput" aria-describedby="emailHelp" placeholder="ex. 50" pattern="[0-9]*">
+            <input type="text" class="form-control newProductFormInput" id="newProductQuantityInput" aria-describedby="emailHelp" placeholder="ex. 50" pattern="[0-9]+">
         </div>
         
         <!-- Modal footer -->
@@ -166,6 +173,8 @@
             <input type="text" class="form-control updateProductFormInput" id="updateProductDescriptionInput" aria-describedby="emailHelp" placeholder="ex. a good item">
             <label for="productIDInput">Price</label>
             <input type="text" class="form-control updateProductFormInput" id="updateProductPriceInput" aria-describedby="emailHelp" placeholder="ex. 120.50" pattern="[0-9!@#$%^*_|]">
+            <label for="productIDInput">Quantity</label>
+            <input type="text" class="form-control updateProductFormInput" id="updateProductQuantityInput" aria-describedby="emailHelp" placeholder="ex. 50" pattern="[0-9]+">
         </div>
         
         <!-- Modal footer -->
@@ -239,15 +248,14 @@
               <input type="text" class="form-control" id="orderPaymentMethod" aria-describedby="emailHelp" readonly>
               <label for="productIDInput">Status</label>
               <select class="form-select" aria-label="Default select example" id="orderStatusOption">
-                <option selected value="pending">Pending</option>
-                <option value="awaitingPayment">Awaiting Payment</option>
-                <option value="paid">Paid</option>
-                <option value="beingMade">Being Made</option>
-                <option value="beingDelivered">Being Delivered</option>
+                <option selected value="COD">COD</option>
+                <option value="gcashAwaitingPayment">G-Cash Awaiting Payment</option>
+                <option value="prepairingForDelivery">Prepairing for Delivery</option>
+                <option value="outForDelivery">Out for Delivery</option>
                 <option value="delivered">Delivered</option>
-                <option value="Cancelled - Product Unavailable">Cancelled - Product Unavailable</option>
+                <!-- <option value="Cancelled - Product Unavailable">Cancelled - Product Unavailable</option>
                 <option value="Cancelled - User Info Incomplete">Cancelled - User Info Incomplete</option>
-                <option value="Cancelled - Address out of Coverage Area">Cancelled - Address out of Coverage Area</option>
+                <option value="Cancelled - Address out of Coverage Area">Cancelled - Address out of Coverage Area</option> -->
               </select> 
             </div>
         </div>
@@ -279,6 +287,41 @@
       </div>
     </div>
   </div>
+
+  <div id="dashboardContainer" class="contentContainer container rounded bg-white mt-5 mb-5 border border-primary border-3 usrprfile" style="position: relative; height:30rem; margin:auto; display:none;">
+    <div style="background-color: #eeeeee; padding: 1rem; height: 100%; overflow: auto;">
+      <div class="row align-items-center">
+        <div class="col-md-4">
+          <div class="mb-3">
+              <h5 class="card-title"><b>Monthly Report</b></h5>
+          </div>
+          
+      </div>
+      <div class="col-md-8 ms-auto">
+        <div class="input-group mb-3 d-flex ms-auto">
+          <div class="col-md-4.2">
+            <select class="form-select" aria-label="Default select example" id="selectMonth">
+                <option selected value="desc">Select Month</option>
+                <option value="jan">January</option>
+                <option value="february">February</option>
+                <option value="march">March</option>
+                <option value="april">April</option>
+                <option value="may">May</option>
+                <option value="june">June</option>
+                <option value="july">July</option>
+                <option value="august">August</option>
+                <option value="september">September</option>
+                <option value="october">October</option>
+                <option value="november">November</option>
+                <option value="december">December</option>
+              </select> 
+        </div>
+      </div>
+    </div>
+  </div>
+    </div>
+    </div>
+  
 
   <div id="ordersContainer" class="contentContainer container rounded bg-white mt-5 mb-5 border border-primary border-3 usrprfile" style="position: relative; height:30rem; margin:auto; padding:0;">
     <div style="background-color: #eeeeee; padding: 1rem; height: 100%; overflow: auto;">
@@ -399,6 +442,7 @@
                                   <th scope="col" style="width:12rem;">Image</th>
                                   <th scope="col">Description</th>
                                   <th scope="col" style="width:10rem;">Price</th>
+                                  <th scope="col" style="width:10rem;">Stocks</th>
                                   <th scope="col" style="width:8rem;">Action</th>
                               </tr>
                           </thead>
@@ -409,6 +453,7 @@
                                   <td><img src="./assets//loading_gif.gif" class="card-img-top" alt="..." style="height:3rem;width: auto;"></td>
                                   <td>product 1 description  </td>
                                   <td>Php 125.23</td>
+                                  <td>50</td>
                                   <td>
                                       <ul class="list-inline mb-0">
                                           <li class="list-inline-item">

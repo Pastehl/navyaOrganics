@@ -125,19 +125,19 @@ async function showOrders(){
 
                 let status = (docItem.data().status);
                 switch (status) {
-                    case 'pending':
-                        status = 'Pending'
+                    case 'COD':
+                        status = 'COD'
                         break;
-                    case 'awaitingPayment':
-                        status = 'Awaiting Payment'
+                    case 'GCASH':
+                        status = 'Awaiting Gcash Payment'
                         break;
                     case 'paid':
                         status = 'Paid'
                         break;
-                    case 'beingMade':
+                    case 'prepairingForDelivery':
                         status = 'Being Made'
                         break;
-                    case 'beingDelivered':
+                    case 'outForDelivery':
                         status = 'Out for Delivery'
                         break;
                     case 'delivered':
@@ -156,7 +156,7 @@ async function showOrders(){
                     default:
                         break;
                 }
-                if(status=="Awaiting Payment"){
+                if(status=="Awaiting Gcash Payment"){
                     status = `<a class="gcashClickable" style="cursor:pointer;">`+status+`</a>`
                 }
 
@@ -364,6 +364,8 @@ function addEditReviewButtonFunctionality(){
             document.getElementById("reviewTextArea").value = docSnap.data().review;
             let product = docSnap.data().product;
             
+
+            
             document.getElementById("productSelectOption").innerHTML =
                 `
                 <option value="`+product+`" selected>`+product+`</option>
@@ -453,15 +455,26 @@ async function updateReview(reviewID){
     showSuccessToast("Processing Request", "Please Wait");
 
     const docRef = doc(db, "reviews", reviewID);
+    const docSnap = await getDoc(docRef);
 
-    await updateDoc(docRef, {
-        product: productOption,
-        rating: starRating,
-        review: reviewTextArea
-    }).then(function(){
-        showSuccessToast("Success", "Review Updated");
+    let editCount = docSnap.data().editCount;
+    if (editCount <= 0) {
+        showErrorToast("Error","Maximum Edits have been made")
         $('#newReviewModal').modal('hide');
-    });
+    }
+    else{
+        editCount = Number(editCount) - 1;
+        await updateDoc(docRef, {
+            product: productOption,
+            rating: starRating,
+            review: reviewTextArea,
+            editCount: editCount
+        }).then(function(){
+            showSuccessToast("Success", "Review Updated");
+            $('#newReviewModal').modal('hide');
+        });
+    }
+    
 }
 
 function addDeleteReviewButtonFunctionality(){

@@ -101,6 +101,8 @@ async function showCartItems(userID){
     console.log("Document data:", docSnap.data());
     let cartItems = docSnap.data().cartItems;
 
+    let qtyArray = [];
+
     console.log(cartItems);
 
     if(cartItems == null || cartItems == undefined || cartItems == [] || cartItems.length == 0){
@@ -122,6 +124,8 @@ async function showCartItems(userID){
             let description = prodDoc.data().description;
             let price = prodDoc.data().price;
             let image = prodDoc.data().image;
+            let qty = prodDoc.data().qty;
+            qtyArray.push(Number(qty));
 
             document.getElementById("cartContainer").innerHTML += 
             `
@@ -135,6 +139,7 @@ async function showCartItems(userID){
                   </div>
                   <div class="col-md-3 col-lg-3 col-xl-3">
                     <p class="lead fw-normal mb-2">`+name+`</p>
+                    <p>Units left: `+qty+`</p>
                     <p>`+description+`</p>
                   </div>
                   <div class="col-md-3 col-lg-3 col-xl-2 d-flex">
@@ -143,7 +148,7 @@ async function showCartItems(userID){
                       <i class="fas fa-minus"></i>
                     </button>
     
-                    <input data-product-id="`+productID+`" class="itemQuantity" id="`+productID+`Qty" min="1" max="100" name="quantity" value="`+quantity+`" type="number"
+                    <input data-product-id="`+productID+`" class="itemQuantity" id="`+productID+`Qty" min="1" max="`+qty+`" name="quantity" value="`+quantity+`" type="number"
                       class="form-control form-control-sm" />
     
                     <button data-operation="add" data-product-id="`+productID+`" class="btn btn-link px-2 itemQuantityButton"
@@ -162,14 +167,19 @@ async function showCartItems(userID){
             </div>
             `
         }
-        await addQtyButtonFunctionality(userID);
+
+        await addQtyButtonFunctionality(userID,qtyArray);
         await addTrashButtonFunctionality(userID);
     }
 }
 
-async function addQtyButtonFunctionality(userID){
+async function addQtyButtonFunctionality(userID,qtyArray){
     // console.log(document.getElementsByClassName("itemQuantity"));
-    for (const elem of document.getElementsByClassName("itemQuantity")) {
+
+    let itemQuantity = document.getElementsByClassName("itemQuantity");
+
+    for (let index = 0; index < itemQuantity.length; index++) {
+        const elem = itemQuantity[index];
         elem.addEventListener('keypress', function(e){
             const key = e.key;
              if(key == "."){
@@ -181,9 +191,14 @@ async function addQtyButtonFunctionality(userID){
             let itemID = elem.getAttribute('data-product-id');
             let newQty = elem.value;
 
-            if(newQty<1){
+            if(newQty<1){     
                 elem.value = 1;
                 newQty = 1;
+            }
+
+            if(newQty>qtyArray[index]){
+                elem.value = qtyArray[index];
+                return
             }
 
             const userRef = doc(db, "users", userID);
@@ -208,13 +223,25 @@ async function addQtyButtonFunctionality(userID){
             })
         }
     }
+
+    // for (const [index,elem] of document.getElementsByClassName("itemQuantity")) {
+    //     console.log(index)
+
+    // }
+
     // console.log(document.getElementsByClassName("itemQuantityButton"));
-    for (const elem of document.getElementsByClassName("itemQuantityButton")) {
+
+    let itemQuantityButton = document.getElementsByClassName("itemQuantityButton");
+
+    for (let index = 0; index < itemQuantityButton.length; index++) {
+        const elem = itemQuantityButton[index];
         elem.onclick = async function(e){
-            console.log("being clicked!");
             let operation = elem.getAttribute('data-operation');
             if(operation=="add"){
                 let numInput = elem.parentNode.querySelector('input[type=number]');
+                if ((Number(numInput.value) + 1) > qtyArray[Math.floor(index/2)]) {
+                    return
+                }
                 numInput.value = Number(numInput.value) + 1
             }else if (operation=="sub"){
                 let numInput = elem.parentNode.querySelector('input[type=number]');
