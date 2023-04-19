@@ -73,7 +73,7 @@
   </div>
 
     <h1 style="margin:2rem auto 1rem; text-align: center; font-weight:600;">Customer Feedback</h1>
-    <div class="d-flex" style="background-color:#e3d3bc;margin:auto;width:96%;padding:0.5rem">
+    <div class="d-flex ms-auto justify-content-end" style="background-color:#e3d3bc;margin:auto;width:96%;padding:0.5rem">
       <div style="height:1rem;text-align: right;margin:0.4rem 0.5rem 0 0;">
         Rating:
       </div>
@@ -83,7 +83,7 @@
             cursor: pointer;
           }
         </style>
-        <div id="starsSearchDiv" style="margin-top:0.4rem">
+        <div id="starsSearchDiv" style="margin:0.4rem 1.5rem 0 0 ">
           <i data-rating="1" class="fa-regular fa-star ratingStarSearch"></i>
           <i data-rating="2" class="fa-regular fa-star ratingStarSearch"></i>
           <i data-rating="3" class="fa-regular fa-star ratingStarSearch"></i>
@@ -91,8 +91,19 @@
           <i data-rating="5" class="fa-regular fa-star ratingStarSearch"></i>
         </div>
       </div>
+
+      <!-- NEW DROPDOWN BUTTON -->
+      <div style="height:1rem;text-align: right;margin:0.4rem 0.5rem 0 1rem;">
+        Select Product:
+      </div>
+      <div class="col-md-4.2"style="margin:0 2.5rem 0 0;">
+        <select class="form-select" aria-label="Default select example" id="orderProducts">
+            <option selected value="price low to high">Price low to high</option> 
+            <option value="price high to low">Price high to low</option>
+          </select> 
     </div>
     </div>
+    
     <div id="reviewsContainer" class="rounded d-flex flex-column align-items-center" style="background-color:#e3d3bc;margin:auto;width:96%;height:85%;padding:2rem;overflow: auto;">
       <!-- <div class="rounded shadow-lg" style="background-color:#fefcf9;height:6rem;width:98%;margin-bottom:1rem;display:flex;column-gap:1rem;padding:0.5rem;">
         <div style="display:flex; justify-content: center;align-items: center;">
