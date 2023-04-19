@@ -27,30 +27,78 @@ const auth = getAuth();
 
 const db = getFirestore(app);
 
+let feedbackOptions = document.getElementById('orderProducts');
+
+const querySnapshot = await getDocs(collection(db, "products"));
+querySnapshot.forEach((doc) => {
+  // doc.data() is never undefined for query doc snapshots
+  let id = doc.id
+  let name = doc.data().name
+  feedbackOptions.innerHTML+= `<option value="`+id+`">`+name+`</option>` ;
+
+});
+feedbackOptions.addEventListener('change',function(){
+    let starsNumber = document.getElementsByClassName("fa-solid ratingStarSearch").length;
+    showReviews(String(starsNumber));
+
+})
 showReviews("default");
 async function showReviews(rating){
     //const querySnapshot = await getDocs(collection(db, "reviews"));
+    
+    // rating = String(starsNumber);
+    // console.log(starsNumber)
+
+    // console.log(rating,typeof(rating))
+    let optionBox = feedbackOptions.value;
+    console.log(optionBox)
     const docsRef = collection(db, "reviews");
     let q;
     switch (rating) {
         case "1":
-            q = query(docsRef, where("rating","==",1), orderBy("date", "desc"));
+            if(optionBox == ""){
+                q = query(docsRef, where("rating","==",1), orderBy("date", "desc")); 
+                break;
+            }
+            q = query(docsRef, where("rating","==",1), where("productID","==",optionBox), orderBy("date", "desc"));
             break;
         case "2":
-            q = query(docsRef, where("rating","==",2), orderBy("date", "desc"));
+            if(optionBox == ""){
+                q = query(docsRef, where("rating","==",2), orderBy("date", "desc")); 
+                break;
+            }
+            q = query(docsRef, where("rating","==",2), where("productID","==",optionBox), orderBy("date", "desc"));
             break;
         case "3":
-            q = query(docsRef, where("rating","==",3), orderBy("date", "desc"));
+            if(optionBox == ""){
+                q = query(docsRef, where("rating","==",3), orderBy("date", "desc")); 
+                break;
+            }
+            q = query(docsRef, where("rating","==",3), where("productID","==",optionBox), orderBy("date", "desc"));
             break;
         case "4":
-            q = query(docsRef, where("rating","==",4), orderBy("date", "desc"));
+            if(optionBox == ""){
+                q = query(docsRef, where("rating","==",4), orderBy("date", "desc")); 
+                break;
+            }
+            q = query(docsRef, where("rating","==",4), where("productID","==",optionBox), orderBy("date", "desc"));
             break;
         case "5":
-            q = query(docsRef, where("rating","==",5), orderBy("date", "desc"));
-            break;
+            if(optionBox == ""){
+                q = query(docsRef, where("rating","==",5), orderBy("date", "desc")); 
+                break;
+            }
+            q = query(docsRef, where("rating","==",5), where("productID","==",optionBox), orderBy("date", "desc"));
+            break; 
         default:
-            q = query(docsRef, orderBy("date", "desc"));
-            break;
+            if(optionBox == ""){
+                q = query(docsRef, orderBy("date", "desc"));
+                break;
+            }else{
+                q = query(docsRef,where("productID","==",optionBox) ,orderBy("date", "desc"));
+            break;   
+            }
+           
     }
     
     const querySnapshot = await getDocs(q);
@@ -358,7 +406,8 @@ async function createReview(userID){
         date: Timestamp.fromDate(new Date()),
         userID: userID,
         editCount: 2,
-        reviewDisabled: Boolean(false)
+        reviewDisabled: Boolean(false),
+        productID: productOption
     }).then(function(){
         showSuccessToast("Success", "Your review is now posted");
         $('#newReviewModal').modal('hide');
