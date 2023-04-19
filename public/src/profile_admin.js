@@ -658,9 +658,9 @@ function addDeleteReviewButtonFunctionality(){
 }
 
 async function deleteReview(reviewsID){
-    await updateDoc(doc(db, "reviews", reviewsID)).then(function() {
-            reviewDisabled: Boolean(true)
-        }).then( async function() {
+    await updateDoc(doc(db, "reviews", reviewsID),{
+        reviewDisabled: Boolean(true)
+    }).then( async function() {
             showSuccessToast("Success", "Review has been deleted")
         });
        

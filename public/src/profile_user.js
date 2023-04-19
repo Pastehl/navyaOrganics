@@ -178,7 +178,7 @@ async function showOrders(){
                     <td>Php `+parseFloat(total).toFixed(2)+`</td>
                     <td>
                         <li class="list-inline-item">
-                            <a href="javascript:void(0);" data-bs-toggle="tooltip" data-bs-placement="top" data-productID="`+orderID+`" title="Delete" class="px-2 text-danger showCancelOrderButton"><i class="fa-solid fa-ban"></i></a>
+                            <a href="javascript:void(0);" data-bs-toggle="tooltip" data-bs-placement="top" data-productID="`+orderID+`" title="Delete" class="px-2 showCancelOrderButton"><i class="fa-solid fa-truck"></i></a>
                         </li>
                     </td>
                 </tr>
@@ -204,7 +204,7 @@ function addCancelOrderButtonFunctionality(){
             let orderID = elem.getAttribute("data-productID");
 
             document.getElementById("cancelOrderPrompt").innerHTML =
-            "Are you sure you want to cancel your order?";
+            "Are you sure you recieved your order?";
             
             $('#cancelOrderModal').modal('show');
 
@@ -229,20 +229,18 @@ async function cancelOrder(orderID){
 
     let status = docSnap.data().status;
 
-    if(status == "pending" || status == "awaitingPayment" || status == "paid" || status == "beingMade"){
+    if(status == "outForDelivery"){
         await updateDoc(docRef, {
-            status: "Cancelled - Cancelled by Customer"
+            status: "Delivered"
         }).then(function(){
-            showSuccessToast("Success", "Your order has been cancelled");
+            showSuccessToast("Success", "Your order has been set to delivered.");
         });
-    }else if(status == "beingDelivered"){
-        showErrorToast("Cannot be Cancelled","Your order is out for delivery.");
     }
-    else if(status == "delivered"){
-        showErrorToast("Cannot be Cancelled","Your order has already been delivered.");
+    else if(status == "delivered" || status == "Delivered"){
+        showErrorToast("Cannot be set to Delivered. ","Your order has already been set delivered.");
     }
     else{
-        showErrorToast("Cannot be Cancelled","Order has already been cancelled.");
+        showErrorToast("Cannot be set to Delivered. ","Order is not yet out for delivery.");
     }
     querySnapshotReviews = await showOrders("desc");
 }
