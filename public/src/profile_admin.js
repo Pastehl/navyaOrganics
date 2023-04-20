@@ -90,6 +90,357 @@ for (const elem of sidebarButtons) {
 
 // ************************
 
+// Monthly Report
+
+// ************************
+
+const orderStatsRef = doc(db, "orders", "orderStats");
+const orderStats = await getDoc(orderStatsRef);
+let orderStatsData = []
+let orderStatsArray = orderStats.data();
+for (const key in orderStatsArray) {
+    if (Object.hasOwnProperty.call(orderStatsArray, key)) {
+        const element = orderStatsArray[key];
+        // console.log(key)
+        // console.log(element)
+        let stats = {productID: key, stats: element};
+        orderStatsData.push(stats);
+
+    }
+}
+
+let JanStats = [];
+let FebStats = [];
+let MarStats = [];
+let AprStats = [];
+let MayStats = [];
+let JunStats = [];
+let JulStats = [];
+let AugStats = [];
+let SepStats = [];
+let OctStats = [];
+let NovStats = [];
+let DecStats = [];
+
+for (let index = 0; index < orderStatsData.length; index++) {
+    const element = orderStatsData[index];
+    let stats = element.stats;
+    for (let i = 0; i < stats.length; i++) {
+        const elem = stats[i];
+        let dateValue = elem.dateTime;
+        let date = dateValue.toDate();
+        let month = date.getMonth();
+
+        switch (month) {
+            case 0:
+                JanStats.push({productID: element.productID, quantity: elem.quantity})
+                break;
+            case 1:
+                FebStats.push({productID: element.productID, quantity: elem.quantity})
+                break;
+            case 2:
+                MarStats.push({productID: element.productID, quantity: Number(elem.quantity)})
+                break;
+            case 3:
+                AprStats.push({productID: element.productID, quantity: Number(elem.quantity)})
+                break;
+            case 4:
+                MayStats.push({productID: element.productID, quantity: Number(elem.quantity)})
+                break;
+            case 5:
+                JunStats.push({productID: element.productID, quantity: Number(elem.quantity)})
+                break;
+            case 6:
+                JulStats.push({productID: element.productID, quantity: Number(elem.quantity)})
+                break;
+            case 7:
+                AugStats.push({productID: element.productID, quantity: Number(elem.quantity)})
+                break;
+            case 8:
+                SepStats.push({productID: element.productID, quantity: Number(elem.quantity)})
+                break;
+            case 9:
+                OctStats.push({productID: element.productID, quantity: Number(elem.quantity)})
+                break;
+            case 10:
+                NovStats.push({productID: element.productID, quantity: Number(elem.quantity)})
+                break;
+            case 11:
+                DecStats.push({productID: element.productID, quantity: Number(elem.quantity)})
+                break;
+        
+            default:
+                break;
+        }
+    }
+}
+
+
+
+//initial value
+showTotalProductsSold(document.getElementById("selectMonth").value);
+showTotalRevenue(document.getElementById("selectMonth").value);
+showBestSelling(document.getElementById("selectMonth").value);
+
+document.getElementById("selectMonth").addEventListener("change",function(){
+    showTotalProductsSold(this.value);
+    showTotalRevenue(this.value);
+    showBestSelling(this.value);
+})
+
+async function showTotalProductsSold(month){
+    let productSold = document.getElementById("productSold");
+    let monthData = [];
+    switch (month) {
+        case "Jan":
+            monthData = JanStats;
+            break;
+        case "Feb":
+            monthData = FebStats;
+            break;
+        case "Mar":
+            monthData = MarStats;
+            break;
+        case "Apr":
+            monthData = AprStats;
+            break;
+        case "May":
+            monthData = MayStats;
+            break;
+        case "Jun":
+            monthData = JunStats;
+            break;
+        case "Jul":
+            monthData = JulStats;
+            break;
+        case "Aug":
+            monthData = AugStats;
+            break;
+        case "Sep":
+            monthData = SepStats;
+            break;
+        case "Oct":
+            monthData = OctStats;
+            break;
+        case "Nov":
+            monthData = NovStats;
+            break;
+        case "Dec":
+            monthData = DecStats;
+            break;
+        default:
+            break;
+    }
+
+    if(monthData.length<1){
+        productSold.innerHTML =
+        `
+        <h3>0 Units Sold</h1>
+        `
+        return;
+    }
+    let combinedData = combineDataByProductID(monthData);
+    let total = calculateTotalQuantity(combinedData)
+    productSold.innerHTML =
+        `
+        <h3>`+total+` Units Sold</h1>
+        `
+}
+
+function calculateTotalQuantity(data) {
+    let totalQuantity = 0;
+    for (let i = 0; i < data.length; i++) {
+      totalQuantity += data[i].quantity;
+    }
+    return totalQuantity;
+}
+
+async function showTotalRevenue(month){
+    let totalRevenue = document.getElementById("totalRevenue");
+    let monthData = [];
+    switch (month) {
+        case "Jan":
+            monthData = JanStats;
+            break;
+        case "Feb":
+            monthData = FebStats;
+            break;
+        case "Mar":
+            monthData = MarStats;
+            break;
+        case "Apr":
+            monthData = AprStats;
+            break;
+        case "May":
+            monthData = MayStats;
+            break;
+        case "Jun":
+            monthData = JunStats;
+            break;
+        case "Jul":
+            monthData = JulStats;
+            break;
+        case "Aug":
+            monthData = AugStats;
+            break;
+        case "Sep":
+            monthData = SepStats;
+            break;
+        case "Oct":
+            monthData = OctStats;
+            break;
+        case "Nov":
+            monthData = NovStats;
+            break;
+        case "Dec":
+            monthData = DecStats;
+            break;
+        default:
+            break;
+    }
+
+    if(monthData.length<1){
+        totalRevenue.innerHTML =
+        `
+        <h3>Php 0.00</h1>
+        `
+        return;
+    }
+
+    let combinedData = combineDataByProductID(monthData);
+    console.log(combinedData)
+
+    let totalAmount = 0.00;
+    for (let index = 0; index < combinedData.length; index++) {
+        const element = combinedData[index];
+        const itemRef = doc(db, "products", element.productID);
+        const itemData = await getDoc(itemRef);
+        let total = itemData.data().price * element.quantity;
+        totalAmount += total;
+    }
+    totalRevenue.innerHTML =
+    `
+    <h3>Php `+parseFloat(totalAmount).toFixed(2)+`</h1>
+    `
+}
+
+async function showBestSelling(month){
+    let bestSelling = document.getElementById("bestSelling");
+    let monthData = [];
+    switch (month) {
+        case "Jan":
+            monthData = JanStats;
+            break;
+        case "Feb":
+            monthData = FebStats;
+            break;
+        case "Mar":
+            monthData = MarStats;
+            break;
+        case "Apr":
+            monthData = AprStats;
+            break;
+        case "May":
+            monthData = MayStats;
+            break;
+        case "Jun":
+            monthData = JunStats;
+            break;
+        case "Jul":
+            monthData = JulStats;
+            break;
+        case "Aug":
+            monthData = AugStats;
+            break;
+        case "Sep":
+            monthData = SepStats;
+            break;
+        case "Oct":
+            monthData = OctStats;
+            break;
+        case "Nov":
+            monthData = NovStats;
+            break;
+        case "Dec":
+            monthData = DecStats;
+            break;
+        default:
+            break;
+    }
+
+    if(monthData.length<1){
+        bestSelling.innerHTML =
+        `
+        `
+        return;
+    }
+
+    let combinedData = combineDataByProductID(monthData);
+    let bestSellingItem = combinedData[findIndexOfHighestQuantity(combinedData)];
+
+    const bestSellingItemRef = doc(db, "products", bestSellingItem.productID);
+    const bestSellingItemData = await getDoc(bestSellingItemRef);
+
+    let bestSellingItemName = bestSellingItemData.data().name;
+
+    bestSelling.innerHTML =
+    `
+        <h3>`+bestSellingItemName+`</h1>
+        <h4>`+bestSellingItem.quantity+` Units Sold</h2>
+    `;
+
+    // console.log("monthData",monthData);
+    // console.log("combinedData",combinedData)
+    // console.log("bestSellingItem",bestSellingItem)
+}
+
+function combineDataByProductID(data) {
+    const combinedData = {};
+    
+    // Loop through each object in the input data array
+    for (let i = 0; i < data.length; i++) {
+      const productID = data[i].productID;
+      const quantity = data[i].quantity;
+      
+      // If the productID is not already a key in combinedData, add it with the corresponding quantity
+      if (!combinedData.hasOwnProperty(productID)) {
+        combinedData[productID] = quantity;
+      }
+      // If the productID is already a key in combinedData, add the quantity to the existing value
+      else {
+        combinedData[productID] += quantity;
+      }
+    }
+    
+    // Convert the combinedData object back to an array of objects
+    const result = [];
+    for (const productID in combinedData) {
+      result.push({ productID: productID, quantity: combinedData[productID] });
+    }
+    
+    return result;
+}
+
+function findIndexOfHighestQuantity(data) {
+    let highestQuantity = -Infinity;
+    let highestQuantityIndex = -1;
+    
+    // Loop through each object in the input data array
+    for (let i = 0; i < data.length; i++) {
+      const quantity = data[i].quantity;
+      
+      // Update the highestQuantity and highestQuantityIndex if a higher quantity is found
+      if (quantity > highestQuantity) {
+        highestQuantity = quantity;
+        highestQuantityIndex = i;
+      }
+    }
+    
+    return highestQuantityIndex;
+}
+
+// ************************
+
 // Manage Orders
 
 // ************************

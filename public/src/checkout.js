@@ -1,6 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-app.js";
 import { getAuth, onAuthStateChanged, signOut, sendEmailVerification, sendSignInLinkToEmail } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-auth.js";
-import { getFirestore, doc, collection, getDoc, setDoc, getDocs, updateDoc, deleteDoc, Timestamp, runTransaction, increment } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-firestore.js";
+import { getFirestore, doc, collection, getDoc, setDoc, getDocs, updateDoc, deleteDoc, Timestamp, runTransaction, increment, arrayUnion } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-firestore.js";
 import { getStorage, ref, uploadBytes, uploadBytesResumable, getDownloadURL } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-storage.js";
 
 const firebaseConfig = {
@@ -255,7 +255,19 @@ async function doubleConfirmOrder(){
                     paymentMethod: paymentMethod,
                     date: Timestamp.fromDate(new Date()),
                     status: status
-                })
+                });
+
+                //order stats
+                for (let index = 0; index < cartItems.length; index++) {
+                    const element = cartItems[index];
+                    let productID = element.productID;
+                    let quantity = element.quantity;
+
+                    await updateDoc(doc(db, "orders", "orderStats"),{
+                        [productID]: arrayUnion({dateTime: Timestamp.fromDate(new Date()), quantity:quantity})
+                    });
+                }
+                
                 const userRef = doc(db, "users", userID);
                     await updateDoc(userRef, {
                         cartItems: [],
