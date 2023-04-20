@@ -86,6 +86,12 @@ function carousel(root) {
 			else {
 				currImage--;
 			}
+
+			if (currImage >= n) {
+				currImage = 0
+			} else if (currImage < 0) {
+				currImage = n-1
+			}
 			
 			rotateCarousel(currImage);
 		}
@@ -94,6 +100,11 @@ function carousel(root) {
 
 	function rotateCarousel(imageIndex) {
 		figure.style.transform = `rotateY(${imageIndex * -theta}rad)`;
+		for (var i = 0; i < n; i++)
+		if (i !== imageIndex)
+			images[i].style.display = 'none';
+		else
+			images[i].style.display = 'unset';
 	}
 	
 }

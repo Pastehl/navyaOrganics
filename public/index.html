@@ -24,8 +24,140 @@
 
     <title>Navya Organics</title>
 </head>
+<style>
+  .carousel {
+    padding: 1rem 20px 20px;
+    perspective: 1200px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width:100%;
+    height: 100vh;
+    background-image: url(./assets/forest-arial-view.jpg);
+    background-size: cover;
+    background-repeat: no-repeat;
+    position: relative;
+  }
+  .carousel > * {
+    flex: 0 0 auto;
+  }
+  .carousel figure {
+    margin: 0;
+    width: 100%;
+    transform-style: preserve-3d;
+    transition: transform 0.5s;
+  }
+  .carousel figure img {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 0 0px;
+  }
+  .carousel figure img:not(:first-of-type) {
+    /* position: absolute; */
+    left: 0;
+    top: 0;
+  }
+  .carousel nav {
+    display: flex;
+    justify-content: center;
+    margin: 20px 0 0;
+    position: absolute;
+    bottom: 35%;
+  }
+  .carousel nav button {
+    flex: 0 0 auto;
+    margin: 0 5px;
+    cursor: pointer;
+    color: #333;
+    background: none;
+    border: none;
+    letter-spacing: 1px;
+    padding: 5px 10px;
+    background-color: white; 
+    opacity: 60%;
+    transition: opacity 500ms
+  }
+
+  .carousel nav button:hover{
+    opacity: 80%;
+  }
+
+  /* Animation */
+  @media (max-width: 900px){
+    section h1{
+      font-size: 2rem;
+      text-align: center;
+    }
+    section .text-container{
+      flex-direction: column;
+    }
+  }
+
+  .reveal{
+    position: relative;
+    transform: translateY(150px);
+    opacity: 0;
+    transition: 1s all ease;
+  }
+
+  .reveal.active{
+    transform: translateY(0);
+    opacity: 1;
+  }
+
+  h1.h1mainlabel {
+    font-size: calc(18px + 10vw);
+    font-family: 'Montserrat',sans-serif;
+    color: white;
+    opacity: 20%;
+    position: fixed;
+    z-index: 0;
+    pointer-events: none;
+    bottom: 0;
+    left: 0;
+    text-align: start;
+    line-height: calc(22px + 10vw);
+  }
+
+  .figure-section {
+    top: 60px;
+    position: inherit;
+  }
+
+  .figure-section img {
+    height: 65vh;
+  }
+
+  .display-flex-items {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    flex-wrap: wrap;
+  }
+
+  @media (max-width: 767px) {
+    h1.h1mainlabel {
+      font-size: 22vw;
+    }
+    .display-flex-items {
+      display: flex;
+      flex-direction: column;
+    }
+    .carousel figure img {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 0 !important;
+      height: 100%;
+      margin-top: 10vh;
+    }
+    .figure-section img {
+      height: 45vh;
+    }
+  }
+</style>
 <body>
-  <nav class="navbar navbar-expand-lg navbar-light navbar-custom">
+  <nav class="navbar navbar-expand-lg fixed-top navbar-light navbar-custom">
     <div class="container-fluid">
       <a class="navbar-brand" href="index.html">Navya Organics</a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -45,167 +177,90 @@
           <li class="nav-item">
             <a class="nav-link" href="about.html">About Us</a>
           </li>
+        </ul>
+        <ul class="navbar-nav d-flex justify-content-end flex-grow-1" >
+          <li class="nav-item"id ="cart">
+            <a class="nav-link" href="shop.html"><i class="fa-solid fa-cart-shopping"id="cartIcon"></i></a>
+          </li>
+          <li class="nav-item"id="login">
+            <a class="nav-link" href="login.html"><i class="fa-solid fa-user"id="loginIcon" > </i></a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
 
-
-            </ul>
-            <ul class="navbar-nav d-flex justify-content-end flex-grow-1" >
-                <li class="nav-item"id ="cart">
-                    <a class="nav-link" href="shop.html"><i class="fa-solid fa-cart-shopping"id="cartIcon"></i></a>
-                </li>
-                <li class="nav-item"id="login">
-                    <a class="nav-link" href="login.html"><i class="fa-solid fa-user"id="loginIcon" > </i></a>
-                </li>
-            </ul>
-          </div>
-        </div>
+  <!-- Carousel -->
+  <section style="background-color: #f0f0e8; height: 100vh;">
+    <div class="carousel" data-gap="20" data-bfc>
+      <h1 class="h1mainlabel">NAVYA ORGANICS</h1>
+      <figure class="figure-section">
+        <img src="./assets/products/image1.png" alt="">
+        <img src="./assets/products/image2.png" alt="">
+        <img src="./assets/products/image3.png" alt="">
+        <img src="./assets/products/image4.png" alt="">
+        <img src="./assets/products/image5.png" alt="">
+        <img src="./assets/products/image6.png" alt="">
+      </figure>
+      <nav>
+        <button class="nav prev"><i class="fa-solid fa-arrow-left" style="pointer-events:none;"></i></button>
+        <button class="nav next"><i class="fa-solid fa-arrow-right" style="pointer-events:none;"></i></button>
       </nav>
 
-      <style>
-        .carousel {
-          padding: 1rem 20px 20px;
-          perspective: 1200px;
-          overflow: hidden;
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-        }
-        .carousel > * {
-          flex: 0 0 auto;
-        }
-        .carousel figure {
-          margin: 0;
-          width: 55%;
-          transform-style: preserve-3d;
-          transition: transform 0.5s;
-        }
-        .carousel figure img {
-          width: 100%;
-          box-sizing: border-box;
-          padding: 0 0px;
-        }
-        .carousel figure img:not(:first-of-type) {
-          position: absolute;
-          left: 0;
-          top: 0;
-        }
-        .carousel nav {
-          display: flex;
-          justify-content: center;
-          margin: 20px 0 0;
-        }
-        .carousel nav button {
-          flex: 0 0 auto;
-          margin: 0 5px;
-          cursor: pointer;
-          color: #333;
-          background: none;
-          border: none;
-          letter-spacing: 1px;
-          padding: 5px 10px;
-          background-color: white; 
-          opacity: 60%;
-          transition: opacity 500ms
-        }
+    </div>
+  </section>
+  <section style="background-color: #f0f0e8; height: 100vh;">
+    <div class="reveal">
+      <div class="display-flex-items" style="padding-top:4rem;">
+        <a href="./products.html" style="text-decoration:none;">
+          <div class="shadow-lg rounded-1" style="width:23rem;height:23rem;background-color: #e3d3bc;">
+            <img src="./assets/products/image1.png" alt="" style="width: 100%;">
+            <h2 style="padding:0.5rem 1rem 0;color:black;font-weight: 800; font-size: 20px;">Browse Navya Organics Products</h2>
+          </div>
+        </a>
+        
+        <a href="./about.html" style="text-decoration:none;">
+          <div class="shadow-lg rounded-1" style="width:23rem;height:23rem;background-color: #e7e0d7;">
+            <img src="./assets/logo_wide.png" alt="" style="width: 100%;">
+            <h2 style="padding:0.5rem 1rem 0;color:black;font-weight: 800; font-size: 20px;">Learn more About Navya Organics</h2>
+          </div>
+        </a>
 
-        .carousel nav button:hover{
-          opacity: 80%;
-        }
-
-        /* Animation */
-        @media (max-width: 900px){
-          section h1{
-            font-size: 2rem;
-            text-align: center;
-          }
-          section .text-container{
-            flex-direction: column;
-          }
-        }
-
-        .reveal{
-          position: relative;
-          transform: translateY(150px);
-          opacity: 0;
-          transition: 1s all ease;
-        }
-
-        .reveal.active{
-          transform: translateY(0);
-          opacity: 1;
-        }
-      </style>
-      
-      <!-- Carousel -->
-      <div class="carousel" data-gap="20" data-bfc style="width:100%;height: 91vh;background-image: url(./assets/forest-arial-view.jpg);background-size: cover;background-repeat: no-repeat;position: relative;">
-
-        <h1 style="font-size:15rem;font-family:'Montserrat',sans-serif;color:white;opacity: 20%;position: absolute;z-index:0;pointer-events:none;">NAVYA ORGANICS</h1>
-        <figure>
-          <img src="./assets/products/image1.png" alt="">
-          <img src="./assets/products/image2.png" alt="">
-          <img src="./assets/products/image3.png" alt="">
-          <img src="./assets/products/image4.png" alt="">
-          <img src="./assets/products/image5.png" alt="">
-          <img src="./assets/products/image6.png" alt="">
-        </figure>
-        <nav>
-          <button class="nav prev"><i class="fa-solid fa-arrow-left" style="pointer-events:none;"></i></button>
-          <button class="nav next"><i class="fa-solid fa-arrow-right" style="pointer-events:none;"></i></button>
-        </nav>
-
+        <a href="./feedback.html" style="text-decoration:none;">
+          <div class="shadow-lg rounded-1" style="width:23rem;height:23rem;background-color: #e3d3bc;">
+            <img src="./assets/products/image2.png" alt="" style="width: 100%;">
+            <h2 style="padding:0.5rem 1rem 0;color:black;font-weight: 800;font-size: 20px;">See What Customers Have to Say</h2>
+          </div>
+        </a>
       </div>
 
-      <section style="background-color: #f0f0e8; height: 30rem;">
-        <div class="reveal">
-          <div class="d-flex align-items-center justify-content-around" style="padding-top:4rem;">
-            <a href="./products.html" style="text-decoration:none;">
-              <div class="shadow-lg rounded-1" style="width:23rem;height:23rem;background-color: #e3d3bc;">
-                <img src="./assets/products/image1.png" alt="" style="width: 100%;">
-                <h2 style="padding:0.5rem 1rem 0;color:black;font-weight: 800;">Browse Navya Organics Products</h2>
-              </div>
-            </a>
-            
-            <a href="./about.html" style="text-decoration:none;">
-              <div class="shadow-lg rounded-1" style="width:23rem;height:23rem;background-color: #e7e0d7;">
-                <img src="./assets/logo_wide.png" alt="" style="width: 100%;">
-                <h2 style="padding:0.5rem 1rem 0;color:black;font-weight: 800;">Learn more About Navya Organics</h2>
-              </div>
-            </a>
-
-            <a href="./feedback.html" style="text-decoration:none;">
-              <div class="shadow-lg rounded-1" style="width:23rem;height:23rem;background-color: #e3d3bc;">
-                <img src="./assets/products/image2.png" alt="" style="width: 100%;">
-                <h2 style="padding:0.5rem 1rem 0;color:black;font-weight: 800;font-size: 1.82rem;">See What Customers Have to Say</h2>
-              </div>
-            </a>
-          </div>
-
-        </div>
-      </section>
+    </div>
+  </section>
 </body>
 </html>
 
 <script>
-    function mouseOut(id) {
-        document.getElementById(id).classList.remove('fa-bounce');
-}
-function mouseOver(id) {
-        document.getElementById(id).classList.add('fa-bounce');
-}
-    document.getElementById("login").addEventListener("mouseover", (e) => {
-        mouseOver("loginIcon")
-    });
-    
-    document.getElementById("login").addEventListener("mouseout", (e) => {
-        mouseOut("loginIcon")
-    });
-    
-    document.getElementById("cart").addEventListener("mouseover", (e) => {
-        mouseOver("cartIcon")
-    });
-    
-    document.getElementById("cart").addEventListener("mouseout", (e) => {
-        mouseOut("cartIcon")
-    });
+  function mouseOut(id) {
+    document.getElementById(id).classList.remove('fa-bounce');
+  }
+  function mouseOver(id) {
+    document.getElementById(id).classList.add('fa-bounce');
+  }
+  document.getElementById("login").addEventListener("mouseover", (e) => {
+    mouseOver("loginIcon")
+  });
+  
+  document.getElementById("login").addEventListener("mouseout", (e) => {
+    mouseOut("loginIcon")
+  });
+  
+  document.getElementById("cart").addEventListener("mouseover", (e) => {
+    mouseOver("cartIcon")
+  });
+  
+  document.getElementById("cart").addEventListener("mouseout", (e) => {
+    mouseOut("cartIcon")
+  });
 </script>
 <script type="module" src="./src/essential.js" defer></script>
 <script type="module" src="./src/index.js" defer></script> 

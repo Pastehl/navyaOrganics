@@ -993,7 +993,7 @@ function addDeleteReviewButtonFunctionality(){
             let reviewID = elem.getAttribute("data-productID");
 
             document.getElementById("deleteReviewPrompt").innerHTML =
-            "Are you sure you want to disable this review? <b>"+reviewID+"</b>?";
+            "Are you sure you want to disable review <b>"+reviewID+"</b>?";
             
             $('#deleteReviewModal').modal('show');
 
@@ -1012,7 +1012,7 @@ async function deleteReview(reviewsID){
     await updateDoc(doc(db, "reviews", reviewsID),{
         reviewDisabled: Boolean(true)
     }).then( async function() {
-            showSuccessToast("Success", "Review has been deleted")
+            showSuccessToast("Success", "Review has been disabled")
         });
        
 }

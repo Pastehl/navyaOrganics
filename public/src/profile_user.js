@@ -125,19 +125,19 @@ async function showOrders(){
 
                 let status = (docItem.data().status);
                 switch (status) {
-                    case 'COD':
-                        status = 'COD'
+                    case 'pending':
+                        status = 'Pending'
                         break;
-                    case 'GCASH':
-                        status = 'Awaiting Gcash Payment'
+                    case 'awaitingPayment':
+                        status = 'Awaiting Payment'
                         break;
                     case 'paid':
                         status = 'Paid'
                         break;
-                    case 'prepairingForDelivery':
+                    case 'beingMade':
                         status = 'Being Made'
                         break;
-                    case 'outForDelivery':
+                    case 'beingDelivered':
                         status = 'Out for Delivery'
                         break;
                     case 'delivered':
@@ -156,7 +156,7 @@ async function showOrders(){
                     default:
                         break;
                 }
-                if(status=="Awaiting Gcash Payment"){
+                if(status=="Awaiting Payment"){
                     status = `<a class="gcashClickable" style="cursor:pointer;">`+status+`</a>`
                 }
 
@@ -178,7 +178,7 @@ async function showOrders(){
                     <td>Php `+parseFloat(total).toFixed(2)+`</td>
                     <td>
                         <li class="list-inline-item">
-                            <a href="javascript:void(0);" data-bs-toggle="tooltip" data-bs-placement="top" data-productID="`+orderID+`" title="Delete" class="px-2 showCancelOrderButton"><i class="fa-solid fa-truck"></i></a>
+                            <a href="javascript:void(0);" data-bs-toggle="tooltip" data-bs-placement="top" data-productID="`+orderID+`" title="Delete" class="px-2 text-danger showCancelOrderButton"><i class="fa-solid fa-ban"></i></a>
                         </li>
                     </td>
                 </tr>
@@ -204,7 +204,7 @@ function addCancelOrderButtonFunctionality(){
             let orderID = elem.getAttribute("data-productID");
 
             document.getElementById("cancelOrderPrompt").innerHTML =
-            "Are you sure you recieved your order?";
+            "Are you sure you want to cancel your order?";
             
             $('#cancelOrderModal').modal('show');
 
@@ -229,18 +229,20 @@ async function cancelOrder(orderID){
 
     let status = docSnap.data().status;
 
-    if(status == "outForDelivery"){
+    if(status == "pending" || status == "awaitingPayment" || status == "paid" || status == "beingMade"){
         await updateDoc(docRef, {
-            status: "Delivered"
+            status: "Cancelled - Cancelled by Customer"
         }).then(function(){
-            showSuccessToast("Success", "Your order has been set to delivered.");
+            showSuccessToast("Success", "Your order has been cancelled");
         });
+    }else if(status == "beingDelivered"){
+        showErrorToast("Cannot be Cancelled","Your order is out for delivery.");
     }
-    else if(status == "delivered" || status == "Delivered"){
-        showErrorToast("Cannot be set to Delivered. ","Your order has already been set delivered.");
+    else if(status == "delivered"){
+        showErrorToast("Cannot be Cancelled","Your order has already been delivered.");
     }
     else{
-        showErrorToast("Cannot be set to Delivered. ","Order is not yet out for delivery.");
+        showErrorToast("Cannot be Cancelled","Order has already been cancelled.");
     }
     querySnapshotReviews = await showOrders("desc");
 }
@@ -362,8 +364,6 @@ function addEditReviewButtonFunctionality(){
             document.getElementById("reviewTextArea").value = docSnap.data().review;
             let product = docSnap.data().product;
             
-
-            
             document.getElementById("productSelectOption").innerHTML =
                 `
                 <option value="`+product+`" selected>`+product+`</option>
@@ -453,26 +453,15 @@ async function updateReview(reviewID){
     showSuccessToast("Processing Request", "Please Wait");
 
     const docRef = doc(db, "reviews", reviewID);
-    const docSnap = await getDoc(docRef);
 
-    let editCount = docSnap.data().editCount;
-    if (editCount <= 0) {
-        showErrorToast("Error","Maximum Edits have been made")
+    await updateDoc(docRef, {
+        product: productOption,
+        rating: starRating,
+        review: reviewTextArea
+    }).then(function(){
+        showSuccessToast("Success", "Review Updated");
         $('#newReviewModal').modal('hide');
-    }
-    else{
-        editCount = Number(editCount) - 1;
-        await updateDoc(docRef, {
-            product: productOption,
-            rating: starRating,
-            review: reviewTextArea,
-            editCount: editCount
-        }).then(function(){
-            showSuccessToast("Success", "Review Updated");
-            $('#newReviewModal').modal('hide');
-        });
-    }
-    
+    });
 }
 
 function addDeleteReviewButtonFunctionality(){
@@ -596,6 +585,7 @@ async function showUserData(userID, userEmail){
 
 async function updateUserData(userID, userEmail){
     const userRef = doc(db, "users", userID);
+    let missingRequired = false
 
     let firstname = document.getElementById("firstname").value;
     let lastname = document.getElementById("lastname").value;
@@ -604,6 +594,39 @@ async function updateUserData(userID, userEmail){
     let address2 = document.getElementById("address2").value;
     let postal = document.getElementById("postal").value;
     let province = document.getElementById("province").value;
+
+    if (!firstname) {
+        document.getElementById("firstname").style.background = "#E97777";
+        missingRequired = true;
+        console.log(firstname)
+    }
+    if (!lastname) {
+        document.getElementById("lastname").style.background = "#E97777";
+        missingRequired = true;
+    }
+    if (!mobile) {
+        document.getElementById("mobile").style.background = "#E97777";
+        missingRequired = true;
+    }
+    if (!address1) {
+        document.getElementById("address1").style.background = "#E97777";
+        missingRequired = true;
+    }
+    if (!address2) {
+        document.getElementById("address2").style.background = "#E97777";
+        missingRequired = true;
+    }
+    if (!postal) {
+        document.getElementById("postal").style.background = "#E97777";
+        missingRequired = true;
+    }
+    if (!province) {
+        document.getElementById("province").style.background = "#E97777";
+        missingRequired = true;
+    }
+    if (missingRequired) {
+        return
+    }
 
     // let image = await updateUserImage(userID);
     // console.log("image", image);
@@ -751,6 +774,29 @@ document.getElementById('verify').onclick = function(e){
             showErrorToast("Error Sending Email","Please try again later");
         }
     });
+}
+
+// Clear fields
+document.getElementById("firstname").onclick = function(e) {
+    document.getElementById("firstname").style.background = "none";
+}
+document.getElementById("lastname").onclick = function(e) {
+    document.getElementById("lastname").style.background = "none";
+}
+document.getElementById("mobile").onclick = function(e) {
+    document.getElementById("mobile").style.background = "none";
+}
+document.getElementById("address1").onclick = function(e) {
+    document.getElementById("address1").style.background = "none";
+}
+document.getElementById("address2").onclick = function(e) {
+    document.getElementById("address2").style.background = "none";
+}
+document.getElementById("postal").onclick = function(e) {
+    document.getElementById("postal").style.background = "none";
+}
+document.getElementById("province").onclick = function(e) {
+    document.getElementById("province").style.background = "none";
 }
 
 // Toasts

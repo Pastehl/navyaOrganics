@@ -71,3 +71,68 @@ form{
 .accordion-body{
     background-color: #f2da9a;
 }
+
+.profile-container {
+    position: absolute;
+    left: 3.75rem;
+}
+
+.profile-container .profile-container-profile-view {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+}
+
+.profile-container .profile-container-profile-view .profile-left-section {
+    width: 40%;
+}
+
+.profile-container .profile-container-profile-view .profile-right-section {
+    width: 60%;
+}
+.profile-right-section .profile-form {
+    padding: 0 20px;
+}
+.profile-right-section .profile-form-header {
+    padding: 60px 0 15px;
+}
+
+@media screen and (max-width: 767px) {
+    .profile-container .profile-container-profile-view {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+    }
+    .profile-container .profile-container-profile-view .profile-left-section {
+        width: 100%;
+    }
+    .profile-container .profile-container-profile-view .profile-right-section {
+        width: 100%;
+    }
+
+    .about-section-one {
+        background-size: auto 100vh;
+    }
+    .about-section-one h1.section-one-main-header {
+        font-size: calc(24px + 12vw) !important;
+    }
+
+    .text-sections .sections-flex {
+        display: flex;
+        flex-direction: column;
+    }
+    .text-sections .sections-flex .section-flex-centered {
+        margin-right: 0 !important;
+        margin-left: 0 !important;
+        padding: 0 15px;
+    }
+    .text-sections .text-footer-section {
+        width: 100%;
+    }
+    .text-sections .text-footer-section > h1 {
+        font-size: calc(22px + 12vw) !important;
+    }
+    .text-sections .text-footer-section > h4 {
+        padding: 0 15px;
+    }
+}
