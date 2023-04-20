@@ -993,7 +993,7 @@ function addDeleteReviewButtonFunctionality(){
             let reviewID = elem.getAttribute("data-productID");
 
             document.getElementById("deleteReviewPrompt").innerHTML =
-            "Are you sure you want to delete review <b>"+reviewID+"</b>?";
+            "Are you sure you want to disable this review? <b>"+reviewID+"</b>?";
             
             $('#deleteReviewModal').modal('show');
 
